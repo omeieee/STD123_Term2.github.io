@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สถิติ บทที่ 5 — ชุดครบครัน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --tab-bg: #0f172a;
+    --tab-border: rgba(255,255,255,0.08);
+    --tab-text: #94a3b8;
+    --tab-active-text: #f8fafc;
+    --tab-active-bg: #1e293b;
+    --accent: #6366f1;
+    --accent2: #e8b84b;
+    --accent3: #34d399;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Sarabun', sans-serif;
+    background: var(--tab-bg);
+  }
+
+  /* ===== TAB BAR ===== */
+  #tab-bar {
+    display: flex;
+    align-items: stretch;
+    background: var(--tab-bg);
+    border-bottom: 1px solid var(--tab-border);
+    height: 52px;
+    padding: 0 12px;
+    gap: 4px;
+    position: relative;
+    z-index: 9999;
+    flex-shrink: 0;
+  }
+
+  .tab-brand {
+    display: flex;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: .12em;
+    padding-right: 16px;
+    border-right: 1px solid var(--tab-border);
+    margin-right: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 20px;
+    height: 100%;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--tab-text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: .04em;
+    border-bottom: 2px solid transparent;
+    transition: all .18s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .tab-btn:hover {
+    color: var(--tab-active-text);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .tab-btn.active {
+    color: var(--tab-active-text);
+    border-bottom-color: var(--accent);
+    background: var(--tab-active-bg);
+  }
+
+  .tab-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--tab-text);
+    opacity: 0.5;
+    transition: all .18s;
+    flex-shrink: 0;
+  }
+
+  .tab-btn.active .tab-dot {
+    opacity: 1;
+  }
+
+  .tab-btn:nth-child(2) .tab-dot { background: var(--accent2); }
+  .tab-btn:nth-child(3) .tab-dot { background: var(--accent); }
+  .tab-btn:nth-child(4) .tab-dot { background: var(--accent3); }
+
+  /* ===== FRAME WRAPPER ===== */
+  #frame-wrapper {
+    height: calc(100vh - 52px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none;
+    background: white;
+  }
+
+  .page-frame.active {
+    display: block;
+  }
+
+  /* Loading overlay */
+  .frame-loading {
+    position: absolute;
+    inset: 0;
+    background: var(--tab-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity .3s;
+    pointer-events: none;
+  }
+
+  .frame-loading.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loading-inner {
+    text-align: center;
+    color: var(--tab-text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+  }
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid rgba(255,255,255,0.08);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin: 0 auto 12px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<div id="tab-bar">
+  <div class="tab-brand">CH.5 · STATS</div>
+
+  <button class="tab-btn active" onclick="switchTab('lecture')" id="btn-lecture">
+    <span class="tab-dot"></span>
+    📖 Lecture Notes
+  </button>
+
+  <button class="tab-btn" onclick="switchTab('answers')" id="btn-answers">
+    <span class="tab-dot"></span>
+    ✅ เฉลยแบบฝึกหัด
+  </button>
+
+  <button class="tab-btn" onclick="switchTab('tutorial')" id="btn-tutorial">
+    <span class="tab-dot"></span>
+    🎓 Interactive Tutorial
+  </button>
+</div>
+
+<div id="frame-wrapper">
+  <div class="frame-loading" id="loading-lecture">
+    <div class="loading-inner">
+      <div class="spinner"></div>
+      กำลังโหลด Lecture Notes…
+    </div>
+  </div>
+  <div class="frame-loading hidden" id="loading-answers">
+    <div class="loading-inner">
+      <div class="spinner"></div>
+      กำลังโหลดเฉลย…
+    </div>
+  </div>
+  <div class="frame-loading hidden" id="loading-tutorial">
+    <div class="loading-inner">
+      <div class="spinner"></div>
+      กำลังโหลด Tutorial…
+    </div>
+  </div>
+
+  <iframe class="page-frame active" id="frame-lecture"
+          src="unit_5_claude.html"
+          onload="frameLoaded('lecture')">
+  </iframe>
+
+  <iframe class="page-frame" id="frame-answers"
+          data-src="1-5.html"
+          onload="frameLoaded('answers')">
+  </iframe>
+
+  <iframe class="page-frame" id="frame-tutorial"
+          data-src="tutorial_STD5.html"
+          onload="frameLoaded('tutorial')">
+  </iframe>
+</div>
+
+<script>
+  const loaded = { lecture: false, answers: false, tutorial: false };
+
+  function frameLoaded(name) {
+    loaded[name] = true;
+    const overlay = document.getElementById('loading-' + name);
+    if (overlay) overlay.classList.add('hidden');
+  }
+
+  function switchTab(name) {
+    // Update buttons
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('btn-' + name).classList.add('active');
+
+    // Show/hide frames
+    document.querySelectorAll('.page-frame').forEach(f => f.classList.remove('active'));
+    const frame = document.getElementById('frame-' + name);
+    frame.classList.add('active');
+
+    // Show loading overlay if not yet loaded
+    const overlay = document.getElementById('loading-' + name);
+    if (!loaded[name]) {
+      overlay.classList.remove('hidden');
+    }
+
+    // Lazy-load iframe src on first visit
+    if (!frame.src || frame.src === 'about:blank' || !frame.src.includes('.html')) {
+      const lazySrc = frame.getAttribute('data-src');
+      if (lazySrc) {
+        frame.src = lazySrc;
+      }
+    }
+  }
+
+  // The lecture iframe is already loading — mark loading overlay visible
+  // It will auto-hide when the iframe fires onload
+</script>
+
+</body>
+</html>
