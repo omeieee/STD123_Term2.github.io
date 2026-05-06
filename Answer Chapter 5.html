@@ -6,7 +6,17 @@
     <title>เฉลยแบบฝึกหัด สถิติ บทที่ 5 (ฉบับสมบูรณ์)</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                processEscapes: true
+            }
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    
     <style>
         :root {
             --primary: #4F46E5; /* Indigo */
@@ -17,6 +27,7 @@
             --text-light: #64748B; /* Slate 500 */
             --accent: #F59E0B; /* Amber */
             --success: #10B981; /* Emerald */
+            --danger: #EF4444; /* Red */
         }
 
         body {
@@ -48,6 +59,18 @@
             align-items: center;
             gap: 10px;
         }
+
+        .badge {
+            background-color: var(--accent);
+            color: white;
+            font-size: 0.85rem;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
         .nav-item {
             padding: 15px 20px;
             margin-bottom: 10px;
@@ -144,6 +167,15 @@
             margin: 15px 0;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
             overflow-x: auto;
+        }
+
+        .info-box {
+            background: #EFF6FF;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 1.05rem;
         }
 
         .highlight-answer {
@@ -247,6 +279,22 @@
         </div>
         <div class="nav-item" onclick="showTab(15)">
             <i class="fa-solid fa-1"></i><i class="fa-solid fa-5" style="margin-left:-8px;"></i> ข้อ 15: ผลต่าง 2 กลุ่ม
+        </div>
+
+        <div class="nav-item active" onclick="showTab(16)">
+            <i class="fa-solid fa-1"></i><i class="fa-solid fa-6" style="margin-left:-8px;"></i> ข้อ 16: ผลต่างค่าเฉลี่ย 1
+        </div>
+        <div class="nav-item" onclick="showTab(17)">
+            <i class="fa-solid fa-1"></i><i class="fa-solid fa-7" style="margin-left:-8px;"></i> ข้อ 17: อัตราส่วนแปรปรวน (F)
+        </div>
+        <div class="nav-item" onclick="showTab(18)">
+            <i class="fa-solid fa-1"></i><i class="fa-solid fa-8" style="margin-left:-8px;"></i> ข้อ 18: ผลต่างค่าเฉลี่ย 2
+        </div>
+        <div class="nav-item" onclick="showTab(19)">
+            <i class="fa-solid fa-1"></i><i class="fa-solid fa-9" style="margin-left:-8px;"></i> ข้อ 19: ค่าเฉลี่ย (Z)
+        </div>
+        <div class="nav-item" onclick="showTab(20)">
+            <i class="fa-solid fa-2"></i><i class="fa-solid fa-0" style="margin-left:-8px;"></i> ข้อ 20: ไคสแควร์ (S²)
         </div>
     </div>
 
@@ -845,6 +893,210 @@
             <div class="highlight-answer">
                 <h3><i class="fa-solid fa-bullseye"></i> คำตอบข้อ 15</h3>
                 <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่ค่าเฉลี่ยความแข็งแรงของ A จะมากกว่า B ไม่ต่ำกว่า 1.5 กก. <strong>คือ 0.0885 (หรือ 8.85%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 16 -->
+        <div class="question-card active" id="q16">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 16</h2>
+                <p>รายได้จังหวัดแรก (1) แจกแจงปกติ $\mu_1 = 15,000$ บ., $\sigma_1^2 = 400$ บ.² สุ่มมา 100 คน<br>
+                รายได้จังหวัดที่สอง (2) แจกแจงปกติ $\mu_2 = 14,000$ บ., $\sigma_2^2 = 300$ บ.² สุ่มมา 100 คน<br>
+                จงหาความน่าจะเป็นที่รายได้เฉลี่ยจังหวัดแรกจะมากกว่าจังหวัดที่สอง <strong>ระหว่าง 980 ถึง 1,020 บาท</strong></p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: เตรียมพารามิเตอร์ผลต่าง 2 กลุ่ม</div>
+                <p>ต้องการหาความน่าจะเป็นของผลต่าง: $P(980 < \bar{X}_1 - \bar{X}_2 < 1020)$</p>
+                <div class="math-block" style="font-size: 1.1rem;">
+                    ค่าเฉลี่ยของผลต่าง: $\mu_{\bar{X}_1 - \bar{X}_2} = 15000 - 14000 = 1000$ <br><br>
+                    ความแปรปรวนของผลต่าง: $\sigma^2_{\bar{X}_1 - \bar{X}_2} = \frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2} = \frac{400}{100} + \frac{300}{100} = 4 + 3 = 7$ <br><br>
+                    ส่วนเบี่ยงเบนมาตรฐาน (SE): $\sigma_{\bar{X}_1 - \bar{X}_2} = \sqrt{7} \approx 2.645$
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: แปลงเป็นค่า Z</div>
+                <div class="math-block">
+                    $Z_1 = \frac{980 - 1000}{2.645} = \frac{-20}{2.645} \approx -7.56$ <br><br>
+                    $Z_2 = \frac{1020 - 1000}{2.645} = \frac{20}{2.645} \approx 7.56$
+                </div>
+                <p>เราต้องหา $P(-7.56 < Z < 7.56)$</p>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-check-circle"></i> คำตอบข้อ 16</h3>
+                <p style="font-size: 1.1rem; margin: 0;">
+                    ค่า Z ที่ได้มีค่ากว้างมากๆ (ถึง 7.56 เท่าของส่วนเบี่ยงเบนมาตรฐาน) 
+                    ซึ่งตามตารางสถิติ พื้นที่ใต้โค้งจะครอบคลุมเกือบ 100% แล้ว<br><br>
+                    ดังนั้น ความน่าจะเป็นที่ผลต่างรายได้เฉลี่ยจะตกอยู่ในช่วงนี้ <strong>มีค่าเข้าใกล้ 1.0000 (หรือเกือบ 100%)</strong> ครับ
+                </p>
+            </div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="question-card" id="q17">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 17 (ข้อปราบเซียน)</h2>
+                <p>สุ่มตัวอย่างขนาด $n_1 = 9$ และ $n_2 = 16$ จากประชากรที่มีการแจกแจงปกติซึ่งมีความแปรปรวน 15 และ 20 ตามลำดับ 
+                จงหา <strong>$P(\frac{S_1^2}{S_2^2} < 0.3)$</strong></p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: วิเคราะห์รูปแบบและใช้ F-Distribution</div>
+                <div class="info-box">
+                    <i class="fa-solid fa-lightbulb" style="color:#F59E0B;"></i> <strong>ทริค:</strong> เมื่อโจทย์ถามหา "สัดส่วนของความแปรปรวน 2 กลุ่ม" เราต้องใช้ <strong>การแจกแจงแบบ F</strong> เสมอ!
+                </div>
+                <p>สูตรของ F คือ: &nbsp; $F = \frac{S_1^2 / \sigma_1^2}{S_2^2 / \sigma_2^2} = \left(\frac{S_1^2}{S_2^2}\right) \times \left(\frac{\sigma_2^2}{\sigma_1^2}\right)$</p>
+                <ul style="font-size: 1.1rem;">
+                    <li>$df_1 = n_1 - 1 = 9 - 1 = 8$</li>
+                    <li>$df_2 = n_2 - 1 = 16 - 1 = 15$</li>
+                    <li>$\sigma_1^2 = 15$ , $\sigma_2^2 = 20$</li>
+                </ul>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: จัดรูปเงื่อนไขของโจทย์ให้กลายเป็นตัว F</div>
+                <p>โจทย์ให้หา $P(\frac{S_1^2}{S_2^2} < 0.3)$ เราเอา $\frac{\sigma_2^2}{\sigma_1^2}$ (ซึ่งก็คือ $\frac{20}{15}$) คูณทั้งสองข้างอสมการ</p>
+                <div class="math-block" style="font-size: 1.1rem;">
+                    $P\left(\frac{S_1^2}{S_2^2} \times \frac{20}{15} < 0.3 \times \frac{20}{15}\right)$ <br><br>
+                    $P(F_{8,15} < 0.3 \times 1.3333)$ <br><br>
+                    $P(F_{8,15} < 0.4)$
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: เปิดตาราง F ด้วยทริค "กลับเศษส่วน"</div>
+                <p>ตาราง F ส่วนใหญ่จะบอกแต่พื้นที่หางขวา (ค่า $F > 1$) แต่เราต้องการหาพื้นที่หางซ้าย ($F < 0.4$) เราจึงต้องใช้กฎพลิกตาราง:</p>
+                <div class="math-block">
+                    $P(F_{v1,v2} < a) = P\left(F_{v2,v1} > \frac{1}{a}\right)$
+                </div>
+                <p>แทนค่าลงไป:</p>
+                <div class="math-block">
+                    $P(F_{8,15} < 0.4) = P\left(F_{15,8} > \frac{1}{0.4}\right) = P(F_{15,8} > 2.5)$
+                </div>
+                <p>ไปเปิดตาราง F ที่ $df_1 = 15, df_2 = 8$ <br>
+                จะพบว่าค่าวิกฤต $F_{0.10}(15,8) = 2.46$ (ใกล้เคียงกับ 2.5 มากๆ)</p>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-check-circle"></i> คำตอบข้อ 17</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่สัดส่วนความแปรปรวน $S_1^2 / S_2^2 < 0.3$ <strong>คือประมาณ 0.10 (หรือ 10%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 18 -->
+        <div class="question-card" id="q18">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 18</h2>
+                <p>แอปเปิลร้านที่ 1 (Pop 1): $\mu_1 = 150$ กรัม, $\sigma_1^2 = 20$, สุ่มมา $n_1 = 30$ ผล<br>
+                แอปเปิลร้านที่ 2 (Pop 2): $\mu_2 = 145$ กรัม, $\sigma_2^2 = 15$, สุ่มมา $n_2 = 40$ ผล<br>
+                จงหาความน่าจะเป็นที่แอปเปิลจากร้านแรกจะมีน้ำหนักเฉลี่ยมากกว่าร้านที่สอง <strong>อย่างน้อย 4 กรัม</strong></p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: เตรียมพารามิเตอร์ผลต่าง (Z-distribution)</div>
+                <p>ต้องการหา: $P(\bar{X}_1 - \bar{X}_2 \ge 4)$</p>
+                <div class="math-block" style="font-size: 1.1rem;">
+                    $\mu_{\bar{X}_1 - \bar{X}_2} = 150 - 145 = 5$ <br><br>
+                    $\sigma^2_{\bar{X}_1 - \bar{X}_2} = \frac{20}{30} + \frac{15}{40} = \frac{2}{3} + \frac{3}{8} = \frac{16+9}{24} = \frac{25}{24} \approx 1.0417$ <br><br>
+                    $\sigma_{\bar{X}_1 - \bar{X}_2} = \sqrt{\frac{25}{24}} = \frac{5}{\sqrt{24}} \approx 1.0206$
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: คำนวณค่า Z และเปิดตาราง</div>
+                <div class="math-block">
+                    $Z = \frac{4 - 5}{1.0206} = \frac{-1}{1.0206} \approx -0.98$
+                </div>
+                <p>ต้องการหาพื้นที่หางขวา $P(Z \ge -0.98)$<br>
+                เปิดตาราง Z ที่ค่า -0.98 ได้พื้นที่ซ้าย = 0.1635</p>
+                <div class="math-block">
+                    $P(Z \ge -0.98) = 1 - 0.1635 = 0.8365$
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-check-circle"></i> คำตอบข้อ 18</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่ร้านแรกจะหนักกว่าร้านสองอย่างน้อย 4 กรัม <strong>คือ 0.8365 (หรือ 83.65%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="question-card" id="q19">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 19</h2>
+                <p>ตัวอย่างสุ่ม $n = 9$ จากประชากรแจกแจงแบบปกติ มีค่าเฉลี่ย $\mu = 10$ และความแปรปรวน $\sigma^2 = 4$<br>
+                จงหา <strong>$P(9 < \bar{X} < 10.5)$</strong></p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: เตรียม Standard Error</div>
+                <p>เนื่องจากทราบความแปรปรวนประชากร ($\sigma^2=4$ ทำให้ $\sigma=2$) เราจึงใช้แกน Z ได้เลย</p>
+                <div class="math-block">
+                    $\sigma_{\bar{X}} = \frac{\sigma}{\sqrt{n}} = \frac{2}{\sqrt{9}} = \frac{2}{3} \approx 0.6667$
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: แปลงเป็นค่า Z ทั้ง 2 ขอบเขต</div>
+                <div class="math-block">
+                    $Z_1 = \frac{9 - 10}{0.6667} = \frac{-1}{0.6667} = -1.50$ <br><br>
+                    $Z_2 = \frac{10.5 - 10}{0.6667} = \frac{0.5}{0.6667} = 0.75$
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: เปิดตารางหาพื้นที่ระหว่างกลาง</div>
+                <ul style="font-size: 1.1rem;">
+                    <li>พื้นที่ทางซ้ายของ $Z = 0.75$ คือ 0.7734</li>
+                    <li>พื้นที่ทางซ้ายของ $Z = -1.50$ คือ 0.0668</li>
+                </ul>
+                <div class="math-block">
+                    $\text{พื้นที่ตรงกลาง} = 0.7734 - 0.0668 = 0.7066$
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-check-circle"></i> คำตอบข้อ 19</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็น $P(9 < \bar{X} < 10.5)$ <strong>คือ 0.7066 (หรือ 70.66%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="question-card" id="q20">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 20</h2>
+                <p>จากข้อ 19 จงหา <strong>$P(S^2 \ge 2.064)$</strong></p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: ตีโจทย์และเลือกสูตร \(\chi^2\)</div>
+                <p>จากข้อ 19 เรามี $n = 9$ ($df = 8$) และ $\sigma^2 = 4$<br>
+                ต้องการหาความน่าจะเป็นของความแปรปรวน ($S^2$) ต้องใช้ ไคสแควร์ ($\chi^2$)</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: แปลงค่า $S^2$ เป็น $\chi^2$</div>
+                <div class="math-block">
+                    $\chi^2 = \frac{(n-1)S^2}{\sigma^2} = \frac{8 \times 2.064}{4}$ <br><br>
+                    $\chi^2 = 2 \times 2.064 = 4.128$
+                </div>
+                <p>ดังนั้นโจทย์เปลี่ยนเป็นหา: $P(\chi^2 \ge 4.128)$ เมื่อ $df = 8$</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: เปิดตาราง Chi-square</div>
+                <p>ในตารางไคสแควร์ที่แถว $df = 8$ เราจะพยายามหาค่าที่ใกล้เคียงกับ 4.128 มากที่สุด:<br>
+                - พบว่า $\chi^2_{0.90} \approx 3.490$ (พื้นที่หางขวา 90%)<br>
+                - พบว่า $\chi^2_{0.80} \approx 4.594$ (พื้นที่หางขวา 80%)<br>
+                ค่า 4.128 อยู่ระหว่างสองค่านี้ หากใช้โปรแกรมคอมพิวเตอร์สถิติคำนวณแบบเป๊ะๆ จะได้ค่าประมาณ <strong>0.845</strong>
+                </p>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-check-circle"></i> คำตอบข้อ 20</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่ $S^2 \ge 2.064$ <strong>คือประมาณ 0.845 (หรือ 84.5%)</strong></p>
             </div>
         </div>
 
