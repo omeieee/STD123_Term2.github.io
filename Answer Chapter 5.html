@@ -232,6 +232,22 @@
         <div class="nav-item" onclick="showTab(10)">
             <i class="fa-solid fa-1"></i><i class="fa-solid fa-0" style="margin-left:-8px;"></i> ข้อ 10: การแจกแจง Chi-square
         </div>
+
+        <div class="nav-item active" onclick="showTab(11)">
+            <i class="fa-solid fa-1"></i><i class="fa-solid fa-1" style="margin-left:-8px;"></i> ข้อ 11: ไคสแควร์ (S)
+        </div>
+        <div class="nav-item" onclick="showTab(12)">
+            <i class="fa-solid fa-1"></i><i class="fa-solid fa-2" style="margin-left:-8px;"></i> ข้อ 12: ค่าเฉลี่ย (Z)
+        </div>
+        <div class="nav-item" onclick="showTab(13)">
+            <i class="fa-solid fa-1"></i><i class="fa-solid fa-3" style="margin-left:-8px;"></i> ข้อ 13: ค่าเฉลี่ย (Z)
+        </div>
+        <div class="nav-item" onclick="showTab(14)">
+            <i class="fa-solid fa-1"></i><i class="fa-solid fa-4" style="margin-left:-8px;"></i> ข้อ 14: ไคสแควร์ (S²)
+        </div>
+        <div class="nav-item" onclick="showTab(15)">
+            <i class="fa-solid fa-1"></i><i class="fa-solid fa-5" style="margin-left:-8px;"></i> ข้อ 15: ผลต่าง 2 กลุ่ม
+        </div>
     </div>
 
     <!-- Main Content -->
@@ -597,6 +613,240 @@
             </div>
         </div>
 
+        <!-- Question 11 -->
+        <div class="question-card active" id="q11">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 11</h2>
+                <p>น้ำหนักของสินค้าชนิดหนึ่งมีการแจกแจงปกติ ค่าเฉลี่ย 50 กก. ความแปรปรวน 100 กก.² ถ้าสุ่มสินค้ามา 16 ชิ้น จงหาความน่าจะเป็นที่ <strong>ส่วนเบี่ยงเบนมาตรฐานของตัวอย่าง</strong> จะมากกว่า 8.4 กก.</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: วิเคราะห์โจทย์และแปลงค่า S เป็น S²</div>
+                <div class="info-box">
+                    <i class="fa-solid fa-circle-info"></i> โจทย์ถามหา "ความน่าจะเป็นของส่วนเบี่ยงเบนมาตรฐาน (S)" 
+                    แต่สูตรที่เรามีคือการแจกแจงความแปรปรวน (\(S^2\)) ด้วย Chi-square 
+                    ดังนั้นเราต้องยกกำลังสองเงื่อนไขที่โจทย์ถามก่อนครับ
+                </div>
+                <p>ต้องการหา \( P(S > 8.4) \)<br>
+                ยกกำลังสองทั้งสองข้างจะได้: \( P(S^2 > 8.4^2) \) &rarr; <strong>\( P(S^2 > 70.56) \)</strong></p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: ใช้สูตร Chi-square (\(\chi^2\))</div>
+                <ul style="font-size: 1.1rem;">
+                    <li>\( \sigma^2 = 100 \)</li>
+                    <li>\( n = 16 \) (ดังนั้น \( df = n - 1 = 15 \))</li>
+                </ul>
+                <div class="math-block">
+                    \(\chi^2 = \frac{(n-1)S^2}{\sigma^2} = \frac{15 \times 70.56}{100}\)
+                </div>
+                <div class="math-block">
+                    \(\chi^2 = \frac{1058.4}{100} = 10.584\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: เปิดตารางหาความน่าจะเป็น</div>
+                <p>เราต้องหาพื้นที่หางขวาของ \( P(\chi^2 > 10.584) \) ที่ \( df = 15 \)<br>
+                เมื่อเทียบกับตารางมาตรฐาน:
+                </p>
+                <ul style="font-size: 1.05rem;">
+                    <li>\( \chi^2_{0.90, 15} \approx 8.547 \) (พื้นที่หางขวา 90%)</li>
+                    <li>\( \chi^2_{0.50, 15} \approx 14.339 \) (พื้นที่หางขวา 50%)</li>
+                </ul>
+                <p>ค่า 10.584 อยู่ระหว่าง 50% ถึง 90% (หากใช้โปรแกรมคำนวณจะได้ประมาณ 0.78 หรือ 78%)</p>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-bullseye"></i> คำตอบข้อ 11</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่ส่วนเบี่ยงเบนมาตรฐานจะมากกว่า 8.4 กก. <strong>คือประมาณ 0.78 (หรือ 78%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="question-card" id="q12">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 12</h2>
+                <p>โรงงานผลิตเหล็กเส้นมีความยาวเฉลี่ย 10 เมตร ส่วนเบี่ยงเบนมาตรฐาน 0.1 เมตร สุ่มมา 25 เส้น จงหาความน่าจะเป็นที่ <strong>ความยาวเฉลี่ย</strong> ของเหล็กเส้นจะแตกต่างจาก 10 เมตร <strong>ไม่เกิน 0.05 เมตร</strong></p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: ตีความคำว่า "แตกต่างไม่เกิน"</div>
+                <p>คำว่าแตกต่างไม่เกิน 0.05 เมตร หมายถึงความคลาดเคลื่อนทั้งบวกและลบ (Absolute Value):</p>
+                <div class="math-block">
+                    \( |\bar{X} - 10| \le 0.05 \)
+                </div>
+                <p>นั่นคือช่วง: \( 9.95 \le \bar{X} \le 10.05 \)</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: หาความคลาดเคลื่อนมาตรฐาน (Standard Error)</div>
+                <p>ข้อมูล: \( \mu = 10 \), \( \sigma = 0.1 \), \( n = 25 \)</p>
+                <div class="math-block">
+                    \(\sigma_{\bar{X}} = \frac{\sigma}{\sqrt{n}} = \frac{0.1}{\sqrt{25}} = \frac{0.1}{5} = 0.02\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: แปลงเป็นค่า Z และหาพื้นที่</div>
+                <p>เราสามารถแปลงส่วนที่ต่างกัน (0.05) เป็นค่า Z ได้โดยตรง:</p>
+                <div class="math-block">
+                    \(Z = \pm\frac{0.05}{\sigma_{\bar{X}}} = \pm\frac{0.05}{0.02} = \pm2.5\)
+                </div>
+                <p>โจทย์ต้องการพื้นที่ \( P(-2.5 \le Z \le 2.5) \)<br>
+                เปิดตาราง Z ที่ 2.5 ได้พื้นที่ฝั่งซ้าย = 0.9938<br>
+                เปิดตาราง Z ที่ -2.5 ได้พื้นที่ฝั่งซ้าย = 0.0062</p>
+                <div class="math-block">
+                    \(\text{พื้นที่ตรงกลาง} = 0.9938 - 0.0062 = 0.9876\)
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-bullseye"></i> คำตอบข้อ 12</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่ความยาวเฉลี่ยจะต่างไม่เกิน 0.05 เมตร <strong>คือ 0.9876 (หรือ 98.76%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 13 -->
+        <div class="question-card" id="q13">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 13</h2>
+                <p>เครื่องจักรบรรจุน้ำยามีการแจกแจงปกติ ค่าเฉลี่ย 200 cc ความแปรปรวน 16 cc² สุ่มมา 10 ขวด หาความน่าจะเป็นที่ <strong>ปริมาตรน้ำยาเฉลี่ยจะน้อยกว่า 198 cc</strong></p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: กำหนดค่าตัวแปร</div>
+                <ul style="font-size: 1.1rem;">
+                    <li>\( \mu = 200 \)</li>
+                    <li>\( \sigma^2 = 16 \) &rarr; ถอดรูทได้ \( \sigma = 4 \)</li>
+                    <li>\( n = 10 \)</li>
+                </ul>
+                <div class="math-block">
+                    \(\sigma_{\bar{X}} = \frac{\sigma}{\sqrt{n}} = \frac{4}{\sqrt{10}} \approx 1.2649\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: คำนวณค่า Z</div>
+                <p>ต้องการหา \( P(\bar{X} < 198) \)</p>
+                <div class="math-block">
+                    \(Z = \frac{198 - 200}{1.2649} = \frac{-2}{1.2649} \approx -1.58\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: เปิดตาราง Z</div>
+                <p>หาพื้นที่ทางซ้ายของ Z = -1.58</p>
+                <div class="math-block">
+                    \(P(Z < -1.58) = 0.0571\)
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-bullseye"></i> คำตอบข้อ 13</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่ปริมาตรเฉลี่ยน้อยกว่า 198 cc <strong>คือ 0.0571 (หรือ 5.71%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="question-card" id="q14">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 14</h2>
+                <p>จากโจทย์ข้อ 13 จงหาความน่าจะเป็นที่ <strong>ความแปรปรวนของปริมาตรน้ำยา</strong> จะอยู่ระหว่าง 9 ถึง 24 cc²</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: วิเคราะห์เครื่องมือที่ใช้</div>
+                <div class="info-box">
+                    โจทย์ถามหาช่วงของความแปรปรวน (\(S^2\)) ต้องใช้การแจกแจงแบบ Chi-square (\(\chi^2\))<br>
+                    จากข้อ 13 เรามี: \( \sigma^2 = 16 \), \( n = 10 \), \( df = 9 \)
+                </div>
+                <p>ต้องการหา: \( P(9 < S^2 < 24) \)</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: แปลงขอบเขตทั้งสองเป็นค่า \(\chi^2\)</div>
+                <p>สูตร: \( \chi^2 = \frac{(n-1)S^2}{\sigma^2} = \frac{9 \times S^2}{16} \)</p>
+                <div class="math-block" style="font-size: 1.1rem;">
+                    ขอบเขตล่าง: \( \chi^2_1 = \frac{9 \times 9}{16} = \frac{81}{16} = 5.0625 \)<br><br>
+                    ขอบเขตบน: \( \chi^2_2 = \frac{9 \times 24}{16} = \frac{216}{16} = 13.5 \)
+                </div>
+                <p style="text-align:center;">โจทย์เปลี่ยนเป็นหา: <strong>\( P(5.0625 < \chi^2 < 13.5) \)</strong></p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: เปิดตาราง Chi-square (df = 9)</div>
+                <p>จากการเปิดตาราง หรือใช้ซอฟต์แวร์ทางสถิติ จะได้ค่าความน่าจะเป็นพื้นที่หางขวาดังนี้:</p>
+                <ul style="font-size: 1.05rem;">
+                    <li>\( P(\chi^2 > 5.0625) \approx 0.829 \) (พื้นที่ตั้งแต่อันแรกไปทางขวา)</li>
+                    <li>\( P(\chi^2 > 13.5) \approx 0.141 \) (พื้นที่ของอันที่สองไปทางขวา)</li>
+                </ul>
+                <div class="math-block">
+                    \(\text{พื้นที่ตรงกลาง} = 0.829 - 0.141 = 0.688\)
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-bullseye"></i> คำตอบข้อ 14</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่ความแปรปรวนตัวอย่างจะอยู่ระหว่าง 9 ถึง 24 cc² <strong>คือประมาณ 0.688 (หรือ 68.8%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 15 -->
+        <div class="question-card" id="q15">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 15</h2>
+                <p>การทดสอบความแข็งแรงของเส้นด้าย 2 ชนิด:<br>
+                ชนิด A: ค่าเฉลี่ย 15 กก. ส่วนเบี่ยงเบน 2 กก. (สุ่มมา 50 เส้น)<br>
+                ชนิด B: ค่าเฉลี่ย 14 กก. ส่วนเบี่ยงเบน 1.5 กก. (สุ่มมา 40 เส้น)<br>
+                จงหาความน่าจะเป็นที่ <strong>ค่าเฉลี่ยของชนิด A จะมากกว่าชนิด B ไม่ต่ำกว่า 1.5 กก.</strong></p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: กำหนดตัวแปรประชากร 2 กลุ่ม</div>
+                <div class="alert-box">
+                    โจทย์ข้อนี้คือ <strong>"การแจกแจงผลต่างของค่าเฉลี่ย (\(\bar{X}_A - \bar{X}_B\))"</strong>
+                </div>
+                <ul style="font-size: 1.1rem;">
+                    <li>กลุ่ม A: \( \mu_A = 15 \), \( \sigma_A = 2 \), \( n_A = 50 \)</li>
+                    <li>กลุ่ม B: \( \mu_B = 14 \), \( \sigma_B = 1.5 \), \( n_B = 40 \)</li>
+                </ul>
+                <p>ต้องการหา: \( P(\bar{X}_A - \bar{X}_B \ge 1.5) \)</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: หาค่าเฉลี่ยและความคลาดเคลื่อนมาตรฐานของผลต่าง</div>
+                <p>1. ค่าเฉลี่ยของผลต่าง (\(\mu_{\bar{X}_A - \bar{X}_B}\)):</p>
+                <div class="math-block">
+                    \(\mu_A - \mu_B = 15 - 14 = 1\) กก.
+                </div>
+                
+                <p>2. ความคลาดเคลื่อนมาตรฐานรวม (รวมความแปรปรวน 2 กลุ่มเข้าด้วยกัน):</p>
+                <div class="math-block" style="font-size: 1.1rem;">
+                    \(\sigma_{\bar{X}_A - \bar{X}_B} = \sqrt{ \frac{\sigma_A^2}{n_A} + \frac{\sigma_B^2}{n_B} }\) <br><br>
+                    \(= \sqrt{ \frac{2^2}{50} + \frac{1.5^2}{40} } = \sqrt{ \frac{4}{50} + \frac{2.25}{40} }\) <br><br>
+                    \(= \sqrt{ 0.08 + 0.05625 } = \sqrt{ 0.13625 } \approx 0.3691\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: แปลงเป็นค่า Z และคำนวณพื้นที่</div>
+                <div class="math-block">
+                    \(Z = \frac{(\text{ค่าที่สนใจ}) - (\text{ค่าเฉลี่ยของผลต่าง})}{\sigma_{\text{รวม}}}\) <br><br>
+                    \(Z = \frac{1.5 - 1}{0.3691} = \frac{0.5}{0.3691} \approx 1.35\)
+                </div>
+                <p>เราต้องการหา \( P(Z \ge 1.35) \) หรือพื้นที่หางขวา<br>
+                เปิดตารางได้พื้นที่ฝั่งซ้ายของ 1.35 คือ 0.9115</p>
+                <div class="math-block">
+                    \(P(Z \ge 1.35) = 1 - 0.9115 = 0.0885\)
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-bullseye"></i> คำตอบข้อ 15</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่ค่าเฉลี่ยความแข็งแรงของ A จะมากกว่า B ไม่ต่ำกว่า 1.5 กก. <strong>คือ 0.0885 (หรือ 8.85%)</strong></p>
+            </div>
+        </div>
 
 
     </div>
