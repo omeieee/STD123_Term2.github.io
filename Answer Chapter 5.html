@@ -216,6 +216,22 @@
         <div class="nav-item active" onclick="showTab(5)">
             <i class="fa-solid fa-5"></i> ข้อ 5: ข้อมูลนิสิต
         </div>
+         
+        <div class="nav-item active" onclick="showTab(6)">
+            <i class="fa-solid fa-6"></i> ข้อ 6: แปลงทวินามเป็นปกติ
+        </div>
+        <div class="nav-item" onclick="showTab(7)">
+            <i class="fa-solid fa-7"></i> ข้อ 7: หาความน่าจะเป็น 1
+        </div>
+        <div class="nav-item" onclick="showTab(8)">
+            <i class="fa-solid fa-8"></i> ข้อ 8: หาความน่าจะเป็น 2
+        </div>
+        <div class="nav-item" onclick="showTab(9)">
+            <i class="fa-solid fa-9"></i> ข้อ 9: หาความน่าจะเป็น 3
+        </div>
+        <div class="nav-item" onclick="showTab(10)">
+            <i class="fa-solid fa-1"></i><i class="fa-solid fa-0" style="margin-left:-8px;"></i> ข้อ 10: การแจกแจง Chi-square
+        </div>
     </div>
 
     <!-- Main Content -->
@@ -358,8 +374,230 @@
                     <li><strong>ความแปรปรวน (\(S^2\)):</strong> 0.3021</li>
                     <li><strong>ส่วนเบี่ยงเบนมาตรฐาน (\(S\)):</strong> 0.55</li>
                 </ul>
+            </div>           
+        </div>
+
+        <!-- Question 6 -->
+        <div class="question-card active" id="q6">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 6</h2>
+                <p>ในการส่งชิ้นส่วนให้ลูกค้า บริษัทพบว่าโดยเฉลี่ยแล้วจะมีชิ้นส่วนชำรุด 5% ถ้ารับชิ้นส่วนมา 200 ชิ้น จงหาความน่าจะเป็นที่มีชิ้นส่วนชำรุดมากกว่า 10 ชิ้น (ใช้การแจกแจงปกติ)</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: กำหนดค่าพารามิเตอร์ทวินาม (Binomial)</div>
+                <p>เรามีข้อมูลความน่าจะเป็นที่ชิ้นส่วนจะชำรุด (\(p\)) และจำนวนชิ้นส่วน (\(n\))</p>
+                <ul style="font-size: 1.1rem;">
+                    <li>\( p = 0.05 \) (โอกาสชำรุด)</li>
+                    <li>\( q = 1 - 0.05 = 0.95 \) (โอกาสปกติ)</li>
+                    <li>\( n = 200 \)</li>
+                </ul>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: แปลงเป็นพารามิเตอร์โค้งปกติ (Normal Approx.)</div>
+                <p>หาค่าเฉลี่ย (\(\mu\)) และส่วนเบี่ยงเบนมาตรฐาน (\(\sigma\)) จากสูตรทวินาม:</p>
+                <div class="math-block">
+                    \(\mu = np = 200 \times 0.05 = 10\)
+                </div>
+                <div class="math-block">
+                    \(\sigma = \sqrt{npq} = \sqrt{200 \times 0.05 \times 0.95} = \sqrt{10 \times 0.95} = \sqrt{9.5} \approx 3.0822\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: ปรับแก้ความต่อเนื่อง (Continuity Correction)</div>
+                <div class="alert-box">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <strong>สำคัญ:</strong> การแปลงข้อมูลไม่ต่อเนื่อง (นับชิ้น) เป็นข้อมูลต่อเนื่อง (พื้นที่ใต้โค้ง) ต้องปรับค่า \(X\) เสมอ<br>
+                    โจทย์ถามหา "มากกว่า 10 ชิ้น" (\(X > 10\)) หมายถึงเริ่มตั้งแต่ 11, 12, ... <br>
+                    ดังนั้นขอบเขตล่างตอนปรับความต่อเนื่องคือ <strong>\(X \ge 10.5\)</strong>
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 4: แปลงเป็นค่า Z และหาคำตอบ</div>
+                <div class="math-block">
+                    \(Z = \frac{X - \mu}{\sigma} = \frac{10.5 - 10}{3.0822} = \frac{0.5}{3.0822} \approx 0.162\)
+                </div>
+                <p>ต้องการหา \(P(Z > 0.16)\) เปิดตาราง Z จะได้พื้นที่ฝั่งซ้ายของ 0.16 คือ 0.5636</p>
+                <div class="math-block">
+                    \(P(Z > 0.16) = 1 - 0.5636 = 0.4364\)
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-check-circle"></i> คำตอบข้อ 6</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่มีชิ้นส่วนชำรุดมากกว่า 10 ชิ้น คือ <strong>0.4364 (หรือ 43.64%)</strong></p>
             </div>
         </div>
+
+        <!-- Question 7 -->
+        <div class="question-card" id="q7">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 7</h2>
+                <p>หลอดไฟอายุการใช้งานเฉลี่ย 800 ชั่วโมง ความแปรปรวน 4,000 ชั่วโมง² สุ่มหลอดไฟ 16 ดวง ความน่าจะเป็นที่อายุการใช้งานเฉลี่ยของหลอดไฟน้อยกว่า 775 ชั่วโมง เป็นเท่าใด?</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: กำหนดค่าตัวแปร</div>
+                <ul style="font-size: 1.1rem;">
+                    <li>\( \mu = 800 \)</li>
+                    <li>\( \sigma^2 = 4000 \) (ดังนั้น \( \sigma = \sqrt{4000} \approx 63.245 \))</li>
+                    <li>\( n = 16 \)</li>
+                    <li>ต้องการหา: \( P(\bar{X} < 775) \)</li>
+                </ul>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: หาความคลาดเคลื่อนมาตรฐาน (Standard Error)</div>
+                <div class="math-block">
+                    \(\sigma_{\bar{X}} = \frac{\sigma}{\sqrt{n}} = \frac{\sqrt{4000}}{\sqrt{16}} = \frac{63.245}{4} \approx 15.811\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: แปลงเป็นค่า Z และหาพื้นที่</div>
+                <div class="math-block">
+                    \(Z = \frac{\bar{X} - \mu}{\sigma_{\bar{X}}} = \frac{775 - 800}{15.811} = \frac{-25}{15.811} \approx -1.58\)
+                </div>
+                <p>เปิดตารางค่า Z (พื้นที่ทางซ้ายของ -1.58)</p>
+                <div class="math-block">
+                    \(P(Z < -1.58) = 0.0571\)
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-check-circle"></i> คำตอบข้อ 7</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่อายุเฉลี่ยน้อยกว่า 775 ชั่วโมง คือ <strong>0.0571 (หรือ 5.71%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="question-card" id="q8">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 8</h2>
+                <p>อายุการใช้งานแบตเตอรี่ชนิดหนึ่งมีการแจกแจงปกติ ค่าเฉลี่ย 3 ปี ส่วนเบี่ยงเบนมาตรฐาน 0.5 ปี สุ่มแบตเตอรี่มา 5 ก้อน จงหาความน่าจะเป็นที่แบตเตอรี่จะมีอายุการใช้งานเฉลี่ยระหว่าง 2.5 ถึง 3.2 ปี</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: กำหนดตัวแปรและหา Standard Error</div>
+                <p>\( \mu = 3 \), \( \sigma = 0.5 \), \( n = 5 \)</p>
+                <div class="math-block">
+                    \(\sigma_{\bar{X}} = \frac{\sigma}{\sqrt{n}} = \frac{0.5}{\sqrt{5}} = \frac{0.5}{2.236} \approx 0.2236\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: แปลงค่าเป็น Z ทั้ง 2 ขอบเขต</div>
+                <p>เราต้องการหา \( P(2.5 < \bar{X} < 3.2) \)</p>
+                <div class="math-block" style="font-size: 1.1rem;">
+                    \(Z_1 = \frac{2.5 - 3}{0.2236} = \frac{-0.5}{0.2236} \approx -2.24\) <br><br>
+                    \(Z_2 = \frac{3.2 - 3}{0.2236} = \frac{0.2}{0.2236} \approx 0.89\)
+                </div>
+                <p style="text-align: center;">ช่วงที่ต้องการคือ \( P(-2.24 < Z < 0.89) \)</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: เปิดตาราง Z และคำนวณพื้นที่ตรงกลาง</div>
+                <ul style="font-size: 1.1rem;">
+                    <li>พื้นที่ทางซ้ายของ \(Z = 0.89\) คือ 0.8133</li>
+                    <li>พื้นที่ทางซ้ายของ \(Z = -2.24\) คือ 0.0125</li>
+                </ul>
+                <div class="math-block">
+                    \(\text{พื้นที่ระหว่าง} = 0.8133 - 0.0125 = 0.8008\)
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-check-circle"></i> คำตอบข้อ 8</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่อายุเฉลี่ยอยู่ระหว่าง 2.5 ถึง 3.2 ปี คือ <strong>0.8008 (หรือ 80.08%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="question-card" id="q9">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 9</h2>
+                <p>เครื่องจักรบรรจุน้ำขวด มีการแจกแจงแบบปกติ ค่าเฉลี่ย 500 cc ส่วนเบี่ยงเบนมาตรฐาน 10 cc ถ้าสุ่มน้ำมา 20 ขวด จงหาความน่าจะเป็นที่ปริมาตรน้ำเฉลี่ยของตัวอย่างจะน้อยกว่า 495 cc</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: กำหนดตัวแปรและ Standard Error</div>
+                <p>\( \mu = 500 \), \( \sigma = 10 \), \( n = 20 \)</p>
+                <div class="math-block">
+                    \(\sigma_{\bar{X}} = \frac{10}{\sqrt{20}} = \frac{10}{4.472} \approx 2.236\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: คำนวณค่า Z</div>
+                <p>เราต้องการหา \( P(\bar{X} < 495) \)</p>
+                <div class="math-block">
+                    \(Z = \frac{495 - 500}{2.236} = \frac{-5}{2.236} \approx -2.24\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: เปิดตาราง Z</div>
+                <p>หาพื้นที่ทางซ้ายของ -2.24 จากตารางสถิติ</p>
+                <div class="math-block">
+                    \(P(Z < -2.24) = 0.0125\)
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-check-circle"></i> คำตอบข้อ 9</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่ปริมาตรเฉลี่ยน้อยกว่า 495 cc คือ <strong>0.0125 (หรือ 1.25%)</strong></p>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="question-card" id="q10">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 10</h2>
+                <p>ความแปรปรวนของประชากรเท่ากับ 100 สุ่มตัวอย่างขนาด \(n = 25\) จงหา \(P(S^2 > 138.4)\)</p>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 1: สังเกตการใช้การแจกแจง</div>
+                <div class="alert-box" style="border-left-color: var(--secondary); background: #F0F9FF;">
+                    <i class="fa-solid fa-magnifying-glass"></i> <strong>คีย์เวิร์ด:</strong> ข้อนี้เป็นการหาความน่าจะเป็นของ <strong>"ความแปรปรวนกลุ่มตัวอย่าง (\(S^2\))"</strong> 
+                    <br>ดังนั้นเราต้องใช้ <strong>การแจกแจงแบบไคสแควร์ (Chi-square: \(\chi^2\))</strong>
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 2: แปลงค่า \(S^2\) เป็นค่า \(\chi^2\)</div>
+                <p>สูตรแปลงค่าคือ: \( \chi^2 = \frac{(n-1)S^2}{\sigma^2} \)</p>
+                <ul style="font-size: 1.1rem;">
+                    <li>\( \sigma^2 = 100 \) (ความแปรปรวนประชากร)</li>
+                    <li>\( n = 25 \) ดังนั้น Degrees of Freedom (\(df\)) \( = 25 - 1 = 24 \)</li>
+                    <li>\( S^2 = 138.4 \) (ค่าที่โจทย์ให้หา)</li>
+                </ul>
+                <div class="math-block">
+                    \(\chi^2 = \frac{(25-1) \times 138.4}{100} = \frac{24 \times 138.4}{100}\)
+                    <br><br>
+                    \(\chi^2 = \frac{3321.6}{100} = 33.216\)
+                </div>
+            </div>
+
+            <div class="step-box">
+                <div class="step-number">ขั้นที่ 3: เปิดตาราง Chi-square</div>
+                <p>โจทย์จะเปลี่ยนเป็นหา \(P(\chi^2 > 33.216)\) เมื่อ \(df = 24\)</p>
+                <p>เมื่อไปดูตารางการแจกแจงไคสแควร์ ที่แถว \(df = 24\)</p>
+                <div class="math-block" style="font-size: 1.1rem;">
+                    จะพบว่าค่าที่ตรงกับ \(\chi^2 = 33.196\) คือคอลัมน์ที่มีพื้นที่หางขวาเท่ากับ \(\alpha = 0.10\)<br>
+                    (เนื่องจาก 33.216 มีค่าใกล้เคียงกับ 33.196 มาก จึงอนุโลมให้ใช้ค่าความน่าจะเป็นเดียวกันได้)
+                </div>
+            </div>
+
+            <div class="highlight-answer">
+                <h3><i class="fa-solid fa-check-circle"></i> คำตอบข้อ 10</h3>
+                <p style="font-size: 1.2rem; margin: 0;">ความน่าจะเป็นที่ความแปรปรวนตัวอย่างจะมากกว่า 138.4 คือประมาณ <strong>0.10 (หรือ 10%)</strong></p>
+            </div>
+        </div>
+
+
 
     </div>
 
