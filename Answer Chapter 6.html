@@ -1,0 +1,232 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เฉลย บทที่ 6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                processEscapes: true
+            }
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #0EA5E9;
+            --bg-color: #F1F5F9;
+            --card-bg: #FFFFFF;
+            --text-main: #1E293B;
+            --text-light: #64748B;
+            --accent: #F59E0B;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--card-bg);
+            padding: 30px 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover {
+            background: #F8FAFC;
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 40px;
+            width: calc(100% - 280px);
+            max-width: 1000px;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-header {
+            border-left: 5px solid var(--accent);
+            padding: 20px;
+            margin-bottom: 30px;
+            background: #FFFBEB;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .step-box {
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            background: #FAFAF9;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .highlight-answer {
+            background: #ECFDF5;
+            border: 2px solid var(--success);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; padding: 20px; display: flex; flex-wrap: wrap; }
+            .main-content { margin-left: 0; width: 100%; padding: 20px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo"><i class="fa-solid fa-graduation-cap"></i> เฉลยบทที่ 6</div>
+        
+        <div class="nav-item active" onclick="showTab(1)"><i class="fa-solid fa-circle-info"></i> ข้อ 1</div>
+        <div class="nav-item" onclick="showTab(2)"><i class="fa-solid fa-circle-info"></i> ข้อ 2</div>
+        <div class="nav-item" onclick="showTab(3)"><i class="fa-solid fa-circle-info"></i> ข้อ 3</div>
+        <div class="nav-item" onclick="showTab(4)"><i class="fa-solid fa-circle-info"></i> ข้อ 4</div>
+        <div class="nav-item" onclick="showTab(5)"><i class="fa-solid fa-circle-info"></i> ข้อ 5</div>
+        <div class="nav-item" onclick="showTab(6)"><i class="fa-solid fa-circle-info"></i> ข้อ 6</div>
+        <div class="nav-item" onclick="showTab(7)"><i class="fa-solid fa-circle-info"></i> ข้อ 7</div>
+        <div class="nav-item" onclick="showTab(8)"><i class="fa-solid fa-circle-info"></i> ข้อ 8</div>
+        <div class="nav-item" onclick="showTab(9)"><i class="fa-solid fa-circle-info"></i> ข้อ 9</div>
+        <div class="nav-item" onclick="showTab(10)"><i class="fa-solid fa-circle-info"></i> ข้อ 10</div>
+        <div class="nav-item" onclick="showTab(11)"><i class="fa-solid fa-circle-info"></i> ข้อ 11</div>
+        <div class="nav-item" onclick="showTab(12)"><i class="fa-solid fa-circle-info"></i> ข้อ 12</div>
+        <div class="nav-item" onclick="showTab(13)"><i class="fa-solid fa-circle-info"></i> ข้อ 13</div>
+        <div class="nav-item" onclick="showTab(14)"><i class="fa-solid fa-circle-info"></i> ข้อ 14</div>
+        <div class="nav-item" onclick="showTab(15)"><i class="fa-solid fa-circle-info"></i> ข้อ 15</div>
+        <div class="nav-item" onclick="showTab(16)"><i class="fa-solid fa-circle-info"></i> ข้อ 16</div>
+        <div class="nav-item" onclick="showTab(17)"><i class="fa-solid fa-circle-info"></i> ข้อ 17</div>
+        <div class="nav-item" onclick="showTab(18)"><i class="fa-solid fa-circle-info"></i> ข้อ 18</div>
+        <div class="nav-item" onclick="showTab(19)"><i class="fa-solid fa-circle-info"></i> ข้อ 19</div>
+        <div class="nav-item" onclick="showTab(20)"><i class="fa-solid fa-circle-info"></i> ข้อ 20</div>
+    </div>
+
+    <div class="main-content">
+        <div class="question-card active" id="q1">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 1</h2>
+                <p>เนื้อหาโจทย์ข้อที่ 1...</p>
+            </div>
+            <div class="step-box">
+                <div class="step-number">วิธีทำ</div>
+                <p>การคำนวณ...</p>
+            </div>
+        </div>
+
+        <div class="question-card" id="q2">
+            <div class="q-header">
+                <h2>โจทย์ข้อ 2</h2>
+                <p>เนื้อหาโจทย์ข้อที่ 2...</p>
+            </div>
+        </div>
+
+        </div>
+
+    <script>
+        function showTab(tabId) {
+            // ลบ active ออกจากทุกการ์ดและทุกเมนู
+            document.querySelectorAll('.question-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
+
+            // แสดงการ์ดที่เลือก
+            const targetCard = document.getElementById('q' + tabId);
+            if (targetCard) targetCard.classList.add('active');
+
+            // ใส่แถบสีม่วงให้เมนูที่เลือก (ใช้ tabId - 1 เพราะ index เริ่มที่ 0)
+            const navItems = document.querySelectorAll('.nav-item');
+            if (navItems[tabId - 1]) {
+                navItems[tabId - 1].classList.add('active');
+            }
+
+            // รีเฟรชสูตรคณิตศาสตร์
+            if (window.MathJax) {
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>

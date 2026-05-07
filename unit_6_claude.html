@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 6 — Estimation</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg2: #161b22;
+      --bg3: #1c2333;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e6edf3;
+      --muted: #7d8590;
+      --accent: #e8b84b;
+      --accent2: #58a6ff;
+      --accent3: #3fb950;
+      --accent4: #f78166;
+      --accent5: #bc8cff;
+      --formula-bg: #0d1b2a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lora', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(13, 17, 23, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; gap: 0;
+      height: 56px; overflow-x: auto;
+    }
+    .nav-inner::-webkit-scrollbar { height: 0; }
+    .nav-link {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      color: var(--muted); text-decoration: none;
+      padding: 0 14px; height: 56px;
+      display: flex; align-items: center; white-space: nowrap;
+      border-bottom: 2px solid transparent; transition: all .2s;
+    }
+    .nav-link:hover { color: var(--text); }
+    .nav-link.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .nav-brand {
+      font-family: 'Playfair Display', serif; font-size: 14px;
+      color: var(--accent); margin-right: 1.5rem;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* LAYOUT */
+    main { max-width: 1100px; margin: 0 auto; padding: 80px 2rem 4rem; }
+
+    /* HERO */
+    .hero {
+      min-height: 90vh; display: flex; flex-direction: column;
+      justify-content: center; padding: 4rem 0 3rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -100px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse, rgba(88, 166, 255, 0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-label {
+      font-family: 'DM Mono', monospace; font-size: 12px;
+      color: var(--accent2); letter-spacing: .15em;
+      text-transform: uppercase; margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 700; line-height: 1.15; margin-bottom: 1.5rem;
+    }
+    .hero h1 em { color: var(--accent2); font-style: normal; }
+    .hero-desc {
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 600px; margin-bottom: 2.5rem;
+    }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      padding: 5px 14px; border-radius: 20px;
+      border: 1px solid var(--border); color: var(--muted);
+    }
+    .pill.blue { border-color: rgba(88,166,255,.3); color: var(--accent2); }
+    .pill.green { border-color: rgba(63,185,80,.3); color: var(--accent3); }
+    .pill.amber { border-color: rgba(232,184,75,.3); color: var(--accent); }
+    .pill.pink { border-color: rgba(247,129,102,.3); color: var(--accent4); }
+    .pill.purple { border-color: rgba(188,140,255,.3); color: var(--accent5); }
+
+    /* SECTIONS */
+    section { padding: 5rem 0; border-top: 1px solid var(--border); }
+    .section-num {
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      color: var(--accent2); letter-spacing: .12em;
+      margin-bottom: .75rem; display: block;
+    }
+    h2 {
+      font-family: 'Playfair Display', serif; font-size: 2rem;
+      font-weight: 600; margin-bottom: 1.25rem; line-height: 1.25;
+    }
+    h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.25rem;
+      font-weight: 600; margin-bottom: .75rem; color: var(--text);
+    }
+    p { color: #adbac7; margin-bottom: 1rem; }
+
+    /* CARDS */
+    .card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem;
+    }
+    .card-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem; margin: 1.5rem 0;
+    }
+    .card-accent { border-left: 3px solid var(--accent); }
+    .card-blue { border-left: 3px solid var(--accent2); }
+    .card-green { border-left: 3px solid var(--accent3); }
+    .card-red { border-left: 3px solid var(--accent4); }
+    .card-purple { border-left: 3px solid var(--accent5); }
+
+    /* DEF BLOCK */
+    .def-block {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent2);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem; margin: 1.25rem 0;
+    }
+    .def-tag {
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      color: var(--accent2); letter-spacing: .1em;
+      text-transform: uppercase; margin-bottom: .5rem; display: block;
+    }
+    .def-block p { color: var(--text); margin: 0; font-size: .95rem; }
+
+    /* FORMULA */
+    .formula {
+      background: var(--formula-bg);
+      border: 1px solid rgba(88, 166, 255, .2);
+      border-radius: 8px; padding: 1rem 1.25rem; margin: .75rem 0;
+      font-family: 'DM Mono', monospace; font-size: .9rem;
+      color: #cae8ff; line-height: 1.6; overflow-x: auto;
+    }
+    .formula .comment { color: var(--muted); }
+
+    /* TABLE */
+    .data-table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: .9rem; }
+    .data-table th {
+      background: var(--bg3); padding: .6rem 1rem; text-align: left;
+      font-family: 'DM Mono', monospace; font-size: .8rem;
+      color: var(--muted); font-weight: 400; border-bottom: 1px solid var(--border);
+    }
+    .data-table td { padding: .6rem 1rem; border-bottom: 1px solid var(--border); color: #adbac7; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table .hi { color: var(--accent); font-weight: 500; }
+    .data-table .blue { color: var(--accent2); }
+    .data-table .green { color: var(--accent3); }
+
+    /* STEP */
+    .steps { display: flex; flex-direction: column; gap: .75rem; margin: 1rem 0; }
+    .step { display: flex; gap: 1rem; align-items: flex-start; }
+    .step-n {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent2); color: #0d1117;
+      font-family: 'DM Mono', monospace; font-size: .75rem; font-weight: 500;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .step-n.amber { background: var(--accent); }
+    .step-n.green { background: var(--accent3); }
+    .step-n.red { background: var(--accent4); }
+    .step-n.purple { background: var(--accent5); }
+    .step-body { font-size: .9rem; color: #adbac7; line-height: 1.7; }
+    .step-body strong { color: var(--text); }
+
+    /* STAT CHIPS */
+    .stat-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: .75rem; margin: 1.25rem 0;
+    }
+    .stat-chip {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1rem; text-align: center;
+    }
+    .stat-val {
+      font-size: 1.6rem; font-weight: 600;
+      font-family: 'DM Mono', monospace; display: block;
+    }
+    .stat-lbl {
+      font-size: .7rem; color: var(--muted);
+      font-family: 'DM Mono', monospace; letter-spacing: .05em;
+      margin-top: .25rem; display: block;
+    }
+
+    /* INTERACTIVE */
+    .interactive {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.75rem; margin: 1.5rem 0;
+    }
+    .interactive h3 {
+      margin-bottom: 1.25rem; font-size: 1rem; color: var(--muted);
+      font-family: 'DM Mono', monospace; font-weight: 400; letter-spacing: .05em;
+    }
+    .ctrl-row { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+    .ctrl-row label {
+      font-family: 'DM Mono', monospace; font-size: .8rem;
+      color: var(--muted); min-width: 180px;
+    }
+    .ctrl-row input[type=range] {
+      flex: 1; -webkit-appearance: none; height: 4px;
+      background: var(--bg3); border-radius: 2px; outline: none;
+    }
+    .ctrl-row input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 16px; height: 16px;
+      border-radius: 50%; background: var(--accent2); cursor: pointer;
+    }
+    .ctrl-row select {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 6px; padding: .4rem .75rem;
+      color: var(--text); font-family: 'DM Mono', monospace;
+      font-size: .82rem; outline: none; cursor: pointer;
+    }
+    .ctrl-val {
+      font-family: 'DM Mono', monospace; font-size: .85rem;
+      color: var(--accent2); min-width: 70px; text-align: right;
+    }
+    .result-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: .75rem; margin: 1rem 0;
+    }
+    .result-chip { background: var(--bg3); border-radius: 8px; padding: .75rem 1rem; }
+    .result-chip .r-lbl {
+      font-family: 'DM Mono', monospace; font-size: .7rem;
+      color: var(--muted); margin-bottom: .25rem;
+    }
+    .result-chip .r-val {
+      font-family: 'DM Mono', monospace; font-size: 1.1rem;
+      color: var(--accent2); font-weight: 500;
+    }
+    .result-formula {
+      background: var(--formula-bg); border-radius: 8px;
+      padding: .75rem 1rem; font-family: 'DM Mono', monospace;
+      font-size: .82rem; color: #cae8ff; margin-top: .75rem; line-height: 1.6;
+    }
+
+    /* CANVAS */
+    canvas { display: block; border-radius: 8px; }
+
+    /* COMPARISON GRID */
+    .cmp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.25rem 0; }
+    @media(max-width:600px) { .cmp-grid { grid-template-columns: 1fr; } }
+    .cmp-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.25rem;
+    }
+    .cmp-title {
+      font-family: 'DM Mono', monospace; font-size: .8rem;
+      letter-spacing: .08em; margin-bottom: .75rem;
+      padding-bottom: .5rem; border-bottom: 1px solid var(--border);
+    }
+
+    /* NOTE */
+    .note {
+      background: rgba(88, 166, 255, .06);
+      border: 1px solid rgba(88, 166, 255, .2);
+      border-radius: 8px; padding: .75rem 1rem;
+      font-size: .88rem; color: #79b8ff; margin: .75rem 0;
+    }
+    .note.amber {
+      background: rgba(232, 184, 75, .06);
+      border-color: rgba(232, 184, 75, .2); color: #c9a84c;
+    }
+    .note.green {
+      background: rgba(63, 185, 80, .05);
+      border-color: rgba(63, 185, 80, .2); color: #56d364;
+    }
+    .note.red {
+      background: rgba(247, 129, 102, .05);
+      border-color: rgba(247, 129, 102, .2); color: #f0a58c;
+    }
+
+    /* DIST TAG */
+    .dtag {
+      display: inline-block; font-family: 'DM Mono', monospace;
+      font-size: .75rem; padding: 3px 10px; border-radius: 4px;
+      margin-right: 6px; margin-bottom: 8px;
+    }
+    .dtag.z { background: rgba(88,166,255,.1); color: var(--accent2); }
+    .dtag.t { background: rgba(247,129,102,.1); color: var(--accent4); }
+    .dtag.chi { background: rgba(188,140,255,.1); color: var(--accent5); }
+    .dtag.f { background: rgba(232,184,75,.1); color: var(--accent); }
+
+    /* SCROLLTOP */
+    .back-top {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--muted); font-size: .8rem;
+      padding: .5rem .8rem; border-radius: 8px; cursor: pointer;
+      font-family: 'DM Mono', monospace; text-decoration: none; transition: all .2s;
+    }
+    .back-top:hover { color: var(--accent2); border-color: var(--accent2); }
+    sup.h { font-size: .6em; vertical-align: .55em; line-height: 0; margin-left: -.1em; }
+    sub { font-size: .75em; vertical-align: -.25em; line-height: 0; }
+
+    .intro-text { font-size: 1.05rem; color: #8b949e; max-width: 700px; margin-bottom: 2rem; }
+    .hl { color: var(--accent); }
+    .hl2 { color: var(--accent2); }
+    .hl3 { color: var(--accent3); }
+
+    /* CI VISUAL */
+    .ci-bar-wrap { margin: 1rem 0; }
+    .ci-bar {
+      height: 36px; background: var(--bg3); border-radius: 6px;
+      position: relative; overflow: visible;
+    }
+    .ci-fill {
+      position: absolute; top: 0; height: 100%;
+      background: rgba(88,166,255,0.2);
+      border: 2px solid var(--accent2); border-radius: 4px;
+    }
+    .ci-mu {
+      position: absolute; top: -6px; bottom: -6px;
+      width: 2px; background: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <span class="nav-brand">CH.6</span>
+      <a class="nav-link active" href="#hero">Overview</a>
+      <a class="nav-link" href="#s61">6.1 Inference</a>
+      <a class="nav-link" href="#s62">6.2 Point Est.</a>
+      <a class="nav-link" href="#s63">6.3 Interval</a>
+      <a class="nav-link" href="#s64">6.4 Mean (1)</a>
+      <a class="nav-link" href="#s65">6.5 Mean (2)</a>
+      <a class="nav-link" href="#s66">6.6 Proportion</a>
+      <a class="nav-link" href="#s67">6.7 Prop (2)</a>
+      <a class="nav-link" href="#s68">6.8 Variance</a>
+      <a class="nav-link" href="#s69">6.9 Var (2)</a>
+      <a class="nav-link" href="#calc">Calculator</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <div class="hero" id="hero">
+      <div class="hero-label">Chapter VI · Statistics</div>
+      <h1>Estimation<br>&amp; <em>Confidence Intervals</em></h1>
+      <p class="hero-desc">การประมาณค่าพารามิเตอร์ประชากร — ทั้งแบบ Point Estimation และ Interval Estimation
+        ซึ่งเป็นรากฐานของ Statistical Inference ที่ใช้ข้อมูลตัวอย่างสรุปเกี่ยวกับประชากร</p>
+      <div class="pill-row">
+        <span class="pill amber">Point Estimation</span>
+        <span class="pill blue">Confidence Intervals</span>
+        <span class="pill green">Unbiasedness</span>
+        <span class="pill pink">t-Distribution</span>
+        <span class="pill purple">χ² & F-Distribution</span>
+      </div>
+      <div style="margin-top:3rem;">
+        <canvas id="heroChart" width="900" height="160"></canvas>
+      </div>
+    </div>
+
+    <!-- 6.1 STATISTICAL INFERENCE -->
+    <section id="s61">
+      <span class="section-num">§ 6.1</span>
+      <h2>Statistical Inference</h2>
+      <p class="intro-text"><span class="hl2">Statistical Inference</span> คือกระบวนการสรุปข้อมูลเกี่ยวกับ
+        <span class="hl">ประชากร</span> โดยใช้ <span class="hl2">ตัวอย่าง</span> แบ่งออกเป็น 2 ประเภทหลัก</p>
+
+      <div class="cmp-grid">
+        <div class="cmp-card" style="border-left:3px solid var(--accent);">
+          <div class="cmp-title" style="color:var(--accent);">▶ 1. ESTIMATION (การประมาณค่า)</div>
+          <p style="font-size:.9rem;margin-bottom:.75rem;">ใช้ข้อมูลตัวอย่างเพื่อประมาณค่าพารามิเตอร์ที่ไม่ทราบ</p>
+          <div style="background:var(--bg);border-radius:8px;padding:.75rem;font-family:'DM Mono',monospace;font-size:.82rem;">
+            <div style="color:var(--accent);margin-bottom:.4rem;">Point Estimation</div>
+            <div style="color:var(--muted);margin-bottom:.75rem;">ประมาณเป็นค่าตัวเลขเดียว เช่น x̄ = 28.75</div>
+            <div style="color:var(--accent2);">Interval Estimation</div>
+            <div style="color:var(--muted);">ประมาณเป็นช่วง เช่น 25 &lt; μ &lt; 31</div>
+          </div>
+        </div>
+        <div class="cmp-card" style="border-left:3px solid var(--accent2);">
+          <div class="cmp-title" style="color:var(--accent2);">▶ 2. HYPOTHESIS TESTING (การทดสอบสมมติฐาน)</div>
+          <p style="font-size:.9rem;margin-bottom:.75rem;">ทดสอบว่าข้อความเกี่ยวกับพารามิเตอร์เป็นจริงหรือไม่</p>
+          <div style="background:var(--bg);border-radius:8px;padding:.75rem;font-family:'DM Mono',monospace;font-size:.82rem;">
+            <div style="color:var(--muted);">H₀: μ = 50  (Null Hypothesis)</div>
+            <div style="color:var(--muted);">H₁: μ ≠ 50  (Alternative)</div>
+            <div style="color:var(--accent2);margin-top:.5rem;">→ จะศึกษาใน Chapter 7</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>บทนี้:</strong> มุ่งเน้นที่ <strong>Estimation</strong> ทั้งแบบ Point และ Interval สำหรับพารามิเตอร์ต่างๆ ได้แก่
+        μ, μ₁−μ₂, p, p₁−p₂, σ², σ₁²/σ₂²
+      </div>
+    </section>
+
+    <!-- 6.2 POINT ESTIMATION -->
+    <section id="s62">
+      <span class="section-num">§ 6.2</span>
+      <h2>Point Estimation</h2>
+      <p class="intro-text">การประมาณค่าพารามิเตอร์ด้วยตัวเลข <span class="hl">ตัวเดียว</span>
+        และเกณฑ์ที่ใช้เปรียบเทียบว่าตัวประมาณตัวไหน <span class="hl2">ดีกว่ากัน</span></p>
+
+      <div class="def-block">
+        <span class="def-tag">Definition 6.1 — Point Estimate</span>
+        <p>Point estimate ของพารามิเตอร์ θ คือค่าตัวเลข θ<sup class="h">^</sup> ที่คำนวณจากสถิติ Θ<sup class="h">^</sup></p>
+      </div>
+
+      <div class="card card-accent" style="margin-bottom:1rem;">
+        <div class="def-tag" style="color:var(--accent)">Example 6.1 — ประมาณ μ และ σ²</div>
+        <p style="font-size:.85rem;color:#8b949e;margin-bottom:.75rem;">ข้อมูล: x₁=25, x₂=30, x₃=29, x₄=31</p>
+        <div class="cmp-grid">
+          <div style="background:var(--bg3);border-radius:8px;padding:1rem;">
+            <div style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--accent);margin-bottom:.5rem;">Point Estimate ของ μ</div>
+            <div class="formula" style="margin:0;">x̄ = (25+30+29+31)/4
+               = 115/4
+               = <strong style="color:var(--accent)">28.75</strong></div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:1rem;">
+            <div style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--accent2);margin-bottom:.5rem;">Point Estimate ของ σ²</div>
+            <div class="formula" style="margin:0;border-color:rgba(88,166,255,.2);color:#cae8ff;">s² = Σ(xᵢ−x̄)²/(n−1)
+               = 20.75/3
+               = <strong style="color:var(--accent2)">6.9</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:2rem;">คุณสมบัติของตัวประมาณ</h3>
+
+      <!-- Unbiasedness -->
+      <div class="card card-green" style="margin-bottom:1rem;">
+        <div class="def-tag" style="color:var(--accent3)">Definition 6.2 — Unbiased Estimator</div>
+        <h3>ตัวประมาณที่ไม่เอนเอียง (Unbiased)</h3>
+        <div class="formula" style="border-color:rgba(63,185,80,.2);color:#b5f0c3;">Θ<sup class="h">^</sup> เป็น Unbiased Estimator ของ θ
+ถ้า E(Θ<sup class="h">^</sup>) = θ
+
+<span class="comment">ตัวอย่าง: E(X̄) = μ  →  X̄ เป็น unbiased estimator ของ μ
+          E(S²) = σ²  →  S² เป็น unbiased estimator ของ σ²</span></div>
+        <div class="note green" style="margin-top:.75rem;">
+          <strong>ทำไม S² = Σ(Xᵢ−X̄)²/(n−1)?</strong> หารด้วย n−1 (ไม่ใช่ n) เพื่อให้ E(S²) = σ² — พิสูจน์โดย Bessel's correction
+        </div>
+      </div>
+
+      <!-- Efficiency -->
+      <div class="card card-blue" style="margin-bottom:1rem;">
+        <div class="def-tag" style="color:var(--accent2)">Definition 6.3 — Most Efficient Estimator</div>
+        <h3>ตัวประมาณที่มีประสิทธิภาพสูงสุด</h3>
+        <p style="font-size:.9rem;">ถ้า Θ<sup class="h">^</sup>₁ และ Θ<sup class="h">^</sup>₂ เป็น unbiased estimators ของ θ ทั้งคู่</p>
+        <div class="formula">ถ้า σ²(Θ<sup class="h">^</sup>₁) &lt; σ²(Θ<sup class="h">^</sup>₂)
+→ Θ<sup class="h">^</sup>₁ มีประสิทธิภาพมากกว่า Θ<sup class="h">^</sup>₂
+
+Most Efficient Estimator = unbiased estimator ที่มี variance น้อยที่สุด</div>
+
+        <div class="card-grid" style="margin-top:.75rem;">
+          <div style="background:var(--bg3);border-radius:8px;padding:1rem;">
+            <div style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--accent);margin-bottom:.4rem;">Example 6.3 — n=7, E(Xᵢ)=μ, Var(Xᵢ)=σ²</div>
+            <div style="font-family:'DM Mono',monospace;font-size:.8rem;color:#adbac7;">
+              Θ<sup class="h">^</sup>₁ = (X₁+...+X₇)/7<br>
+              Θ<sup class="h">^</sup>₂ = (2X₁−X₆+X₄)/2<br><br>
+              <span style="color:var(--accent3)">Var(Θ<sup class="h">^</sup>₁) = σ²/7</span><br>
+              <span style="color:var(--accent4)">Var(Θ<sup class="h">^</sup>₂) = 3σ²/2</span>
+            </div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:1rem;">
+            <div style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--accent2);margin-bottom:.4rem;">สรุปผล</div>
+            <div style="font-family:'DM Mono',monospace;font-size:.8rem;color:#adbac7;">
+              σ²/7 ≈ 0.143σ² <span style="color:var(--accent3)">✓ น้อยกว่า</span><br>
+              3σ²/2 = 1.5σ² <span style="color:var(--accent4)">✗ มากกว่า</span><br><br>
+              <span style="color:var(--accent)">∴ Θ<sup class="h">^</sup>₁ ดีกว่า Θ<sup class="h">^</sup>₂</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cramer-Rao -->
+      <div class="card card-purple">
+        <div class="def-tag" style="color:var(--accent5)">Theorem 6.1 — Cramer-Rao Inequality</div>
+        <h3>ขอบเขตล่างของ Variance</h3>
+        <div class="formula" style="border-color:rgba(188,140,255,.2);color:#e2c5ff;">Var(Θ<sup class="h">^</sup>) ≥ 1 / { n · E[(d/dθ ln f(x;θ))²] }
+
+<span class="comment">ถ้า Var(Θ<sup class="h">^</sup>) = Cramer-Rao lower bound
+→ Θ<sup class="h">^</sup> เป็น Minimum Variance Unbiased Estimator (MVUE)
+→ เรียกว่า "Efficient Estimator"</span></div>
+        <div class="note" style="background:rgba(188,140,255,.06);border-color:rgba(188,140,255,.2);color:#c8a8ff;">
+          <strong>Ex 6.4:</strong> X̄ จากประชากร Normal มี Var(X̄) = σ²/n ซึ่งเท่ากับ Cramer-Rao bound
+          → X̄ เป็น MVUE ของ μ
+        </div>
+      </div>
+
+      <!-- Consistency -->
+      <div class="def-block" style="margin-top:1.5rem;border-left-color:var(--accent3);">
+        <span class="def-tag" style="color:var(--accent3)">Definition 6.4 + Theorem 6.2 — Consistent Estimator</span>
+        <p>Θ<sup class="h">^</sup><sub>n</sub> เป็น Consistent Estimator ของ θ ถ้า lim(n→∞) P(|Θ<sup class="h">^</sup><sub>n</sub> − θ| &lt; ε) = 1 หรือ lim Θ<sup class="h">^</sup><sub>n</sub> = θ</p>
+        <br>
+        <p><strong>Theorem 6.2:</strong> Θ<sup class="h">^</sup><sub>n</sub> เป็น consistent ถ้า (1) เป็น unbiased และ (2) Var(Θ<sup class="h">^</sup><sub>n</sub>) → 0 เมื่อ n → ∞</p>
+        <br>
+        <p><strong>Ex 6.5:</strong> X̄ เป็น consistent ของ μ เพราะ lim Var(X̄) = lim σ²/n = 0 ✓</p>
+      </div>
+
+      <!-- Summary Table -->
+      <h3 style="margin-top:2rem;">สรุปคุณสมบัติของตัวประมาณ</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>คุณสมบัติ</th>
+            <th>เงื่อนไข</th>
+            <th>ความหมาย</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="hi">Unbiased</td>
+            <td>E(Θ<sup class="h">^</sup>) = θ</td>
+            <td>ค่าคาดหวังตรงกับพารามิเตอร์จริง</td>
+          </tr>
+          <tr>
+            <td class="blue">Efficient</td>
+            <td>Var(Θ<sup class="h">^</sup>) น้อยที่สุดในบรรดา unbiased estimators</td>
+            <td>ความแปรปรวนน้อยที่สุด → แม่นยำที่สุด</td>
+          </tr>
+          <tr>
+            <td style="color:var(--accent3)">Consistent</td>
+            <td>Θ<sup class="h">^</sup><sub>n</sub> → θ เมื่อ n → ∞</td>
+            <td>ยิ่ง n มาก ยิ่งใกล้ค่าจริง</td>
+          </tr>
+          <tr>
+            <td style="color:var(--accent5)">MVUE</td>
+            <td>Var = Cramer-Rao bound</td>
+            <td>Minimum Variance Unbiased Estimator</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 6.3 INTERVAL ESTIMATION -->
+    <section id="s63">
+      <span class="section-num">§ 6.3</span>
+      <h2>Interval Estimation</h2>
+      <p class="intro-text">แทนที่จะประมาณเป็นจุดเดียว เราสร้าง <span class="hl2">ช่วงความเชื่อมั่น</span>
+        ที่มีความน่าจะเป็น (1−α)×100% ที่จะครอบคลุมค่าพารามิเตอร์จริง</p>
+
+      <div class="def-block">
+        <span class="def-tag">Confidence Interval</span>
+        <p>ช่วง θ<sup class="h">^</sup><sub>L</sub> &lt; θ &lt; θ<sup class="h">^</sup><sub>U</sub> โดยที่ P(θ<sup class="h">^</sup><sub>L</sub> &lt; θ &lt; θ<sup class="h">^</sup><sub>U</sub>) = 1 − α</p>
+        <br>
+        <p>(1−α)×100% เรียกว่า <strong>Confidence Coefficient</strong> หรือ <strong>Degree of Confidence</strong></p>
+      </div>
+
+      <div class="card-grid">
+        <div class="card card-accent">
+          <div class="def-tag" style="color:var(--accent)">α = 0.05 → 95% CI</div>
+          <div class="formula" style="font-size:.85rem;">x̄ − z₀.₀₂₅(σ/√n) &lt; μ &lt; x̄ + z₀.₀₂₅(σ/√n)
+z₀.₀₂₅ = 1.96</div>
+          <div class="ci-bar-wrap">
+            <div class="ci-bar" style="background:var(--bg);">
+              <div class="ci-fill" style="left:5%;width:90%;"></div>
+              <div class="ci-mu" style="left:50%;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);margin-top:.3rem;">
+              <span>x̄−1.96σ/√n</span><span style="color:var(--accent)">μ</span><span>x̄+1.96σ/√n</span>
+            </div>
+          </div>
+        </div>
+        <div class="card card-blue">
+          <div class="def-tag" style="color:var(--accent2)">α = 0.01 → 99% CI</div>
+          <div class="formula" style="font-size:.85rem;border-color:rgba(88,166,255,.2);color:#cae8ff;">x̄ − z₀.₀₀₅(σ/√n) &lt; μ &lt; x̄ + z₀.₀₀₅(σ/√n)
+z₀.₀₀₅ = 2.575</div>
+          <div class="ci-bar-wrap">
+            <div class="ci-bar" style="background:var(--bg);">
+              <div class="ci-fill" style="left:2%;width:96%;border-color:var(--accent2);"></div>
+              <div class="ci-mu" style="left:50%;background:var(--accent2);"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);margin-top:.3rem;">
+              <span>x̄−2.575σ/√n</span><span style="color:var(--accent2)">μ</span><span>x̄+2.575σ/√n</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note amber">
+        <strong>ความกว้าง CI:</strong> ยิ่ง Confidence Level สูง (α ต่ำ) → CI ยิ่งกว้าง | ยิ่ง n มาก → CI ยิ่งแคบ (แม่นยำขึ้น)
+        ต้องแลกระหว่าง <em>ความแม่นยำ</em> กับ <em>ความเชื่อมั่น</em>
+      </div>
+    </section>
+
+    <!-- 6.4 SINGLE SAMPLE: MEAN -->
+    <section id="s64">
+      <span class="section-num">§ 6.4</span>
+      <h2>Single Sample: Estimating the Mean</h2>
+      <span class="dtag z">Z-dist</span><span class="dtag t">t-dist</span>
+      <p class="intro-text">เลือกสูตรตาม <span class="hl">ทราบ/ไม่ทราบ σ</span> และ <span class="hl2">ขนาดตัวอย่าง n</span></p>
+
+      <!-- Three cases -->
+      <div class="card card-accent" style="margin-bottom:1rem;">
+        <div class="def-tag" style="color:var(--accent)">Definition 6.4 — σ ทราบค่า (ทุก n)</div>
+        <h3>Case 1: σ Known</h3>
+        <div class="formula">x̄ − z_{α/2}·(σ/√n) &lt; μ &lt; x̄ + z_{α/2}·(σ/√n)
+
+<span class="comment">ใช้ได้: ประชากรปกติ (ทุก n) หรือ n ≥ 30 (CLT)</span></div>
+      </div>
+
+      <div class="card card-blue" style="margin-bottom:1rem;">
+        <div class="def-tag" style="color:var(--accent2)">Definition 6.5 — σ ไม่ทราบ, n ≥ 30</div>
+        <h3>Case 2: σ Unknown, n ≥ 30</h3>
+        <div class="formula" style="border-color:rgba(88,166,255,.2);color:#cae8ff;">x̄ − z_{α/2}·(s/√n) &lt; μ &lt; x̄ + z_{α/2}·(s/√n)
+
+<span class="comment">แทน σ ด้วย s เพราะ n มากพอ → distribution ยังปกติ</span></div>
+      </div>
+
+      <div class="card card-red" style="margin-bottom:1rem;">
+        <div class="def-tag" style="color:var(--accent4)">Definition 6.6 — σ ไม่ทราบ, n &lt; 30</div>
+        <h3>Case 3: σ Unknown, n &lt; 30 → ใช้ t-distribution</h3>
+        <div class="formula" style="border-color:rgba(247,129,102,.2);color:#ffb3a7;">x̄ − t_{α/2}·(s/√n) &lt; μ &lt; x̄ + t_{α/2}·(s/√n)
+
+<span class="comment">t_{α/2} มี ν = n−1 degrees of freedom
+T = (X̄ − μ) / (S/√n) ~ t(n−1)</span></div>
+      </div>
+
+      <!-- Decision Table -->
+      <h3 style="margin-top:1.5rem;">เลือกสูตรอย่างไร?</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>เงื่อนไข</th><th>สูตร</th><th>Critical Value</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>รู้ σ (ทุก n) / ไม่รู้ σ แต่ n ≥ 30</td>
+            <td class="hi">x̄ ± z_{α/2}·(σ หรือ s)/√n</td>
+            <td class="green">z (Normal table)</td>
+          </tr>
+          <tr>
+            <td>ไม่รู้ σ, n &lt; 30, ประชากรปกติ</td>
+            <td class="blue">x̄ ± t_{α/2}·s/√n</td>
+            <td style="color:var(--accent4)">t(ν=n−1)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Examples -->
+      <div class="card-grid" style="margin-top:1.5rem;">
+        <div class="card card-accent">
+          <div class="def-tag" style="color:var(--accent)">Example 6.6 — สังกะสีในแม่น้ำ</div>
+          <p style="font-size:.83rem;color:#8b949e;margin-bottom:.5rem;">x̄=2.6, σ=0.3, n=36 → หา 95% และ 99% CI</p>
+          <div class="steps">
+            <div class="step">
+              <div class="step-n amber">1</div>
+              <div class="step-body">95% CI: z₀.₀₂₅ = 1.96<br>2.6±1.96×(0.3/√36) = 2.6±0.098<br><strong style="color:var(--accent)">2.50 &lt; μ &lt; 2.70</strong></div>
+            </div>
+            <div class="step">
+              <div class="step-n amber">2</div>
+              <div class="step-body">99% CI: z₀.₀₀₅ = 2.575<br>2.6±2.575×(0.3/√36)<br><strong style="color:var(--accent)">2.47 &lt; μ &lt; 2.73</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="card card-red">
+          <div class="def-tag" style="color:var(--accent4)">Example 6.9 — กรดซัลฟิวริก (n=7)</div>
+          <p style="font-size:.83rem;color:#8b949e;margin-bottom:.5rem;">ข้อมูล: 9.8, 10.2, 10.4, 9.8, 10.0, 10.2, 9.6<br>→ หา 95% CI (ไม่รู้ σ, n&lt;30)</p>
+          <div class="steps">
+            <div class="step">
+              <div class="step-n red">1</div>
+              <div class="step-body">x̄ = 70/7 = <strong>10.0</strong>, s ≈ <strong>0.283</strong></div>
+            </div>
+            <div class="step">
+              <div class="step-n red">2</div>
+              <div class="step-body">t₀.₀₂₅(6) = 2.447<br>10.0 ± 2.447×(0.283/√7)</div>
+            </div>
+            <div class="step">
+              <div class="step-n red">3</div>
+              <div class="step-body"><strong style="color:var(--accent4)">9.74 &lt; μ &lt; 10.26</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error & Sample Size -->
+      <div class="card card-green" style="margin-top:1.5rem;">
+        <div class="def-tag" style="color:var(--accent3)">Theorem 6.3 & 6.4 — Error & Sample Size</div>
+        <h3>ขนาดตัวอย่างที่ต้องการ</h3>
+        <div class="formula" style="border-color:rgba(63,185,80,.2);color:#b5f0c3;">Error ≤ e   เมื่อ  e = z_{α/2}·σ/√n
+
+→ Sample size ที่ต้องการ:  n = (z_{α/2}·σ / e)²
+
+<span class="comment">ปัดขึ้นเสมอ! เช่น 138.3 → 139</span></div>
+        <div style="background:var(--bg3);border-radius:8px;padding:1rem;margin-top:.75rem;">
+          <div style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--muted);margin-bottom:.5rem;">Example 6.8 — จาก Ex 6.6 ต้องการ error &lt; 0.05 ด้วย 95% confidence</div>
+          <div class="formula" style="margin:0;border-color:rgba(63,185,80,.15);color:#b5f0c3;">n = [(1.96)(0.3)/0.05]² = [11.76]² = 138.3 ≈ <strong>139</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6.5 TWO SAMPLES: MEANS -->
+    <section id="s65">
+      <span class="section-num">§ 6.5</span>
+      <h2>Two Samples: Estimating μ₁ − μ₂</h2>
+      <p class="intro-text">เปรียบเทียบ <span class="hl">ค่าเฉลี่ยสองกลุ่ม</span> ที่เป็นอิสระต่อกัน
+        โดยสร้าง CI สำหรับ μ₁ − μ₂ หรือ μ_D (Paired)</p>
+
+      <!-- 4 cases -->
+      <div class="card card-accent" style="margin-bottom:1rem;">
+        <div class="def-tag" style="color:var(--accent)">Definition 6.7 — σ₁², σ₂² ทราบ / n₁,n₂ ≥ 30</div>
+        <div class="formula">(x̄₁−x̄₂) ± z_{α/2}·√(σ₁²/n₁ + σ₂²/n₂)</div>
+        <div style="background:var(--bg3);border-radius:8px;padding:.75rem;margin-top:.5rem;font-size:.83rem;color:#8b949e;">
+          <strong>Ex 6.10:</strong> Engine A: x̄=36, σ=6, n=75 | Engine B: x̄=42, σ=8, n=50<br>
+          96% CI → z₀.₀₂ = 2.05<br>
+          <span style="color:var(--accent)">3.43 &lt; μ_B−μ_A &lt; 8.57</span>
+        </div>
+      </div>
+
+      <div class="card card-blue" style="margin-bottom:1rem;">
+        <div class="def-tag" style="color:var(--accent2)">Definition 6.8 — σ₁², σ₂² ไม่ทราบ, n₁,n₂ ≥ 30</div>
+        <div class="formula" style="border-color:rgba(88,166,255,.2);color:#cae8ff;">(x̄₁−x̄₂) ± z_{α/2}·√(s₁²/n₁ + s₂²/n₂)</div>
+      </div>
+
+      <div class="cmp-grid">
+        <div class="card card-green">
+          <div class="def-tag" style="color:var(--accent3)">Definition 6.9 — σ₁²=σ₂², n₁,n₂ &lt; 30</div>
+          <p style="font-size:.83rem;color:#8b949e;margin-bottom:.5rem;">ใช้ Pooled Variance</p>
+          <div class="formula" style="border-color:rgba(63,185,80,.2);color:#b5f0c3;font-size:.8rem;">s²_p = [(n₁−1)s₁²+(n₂−1)s₂²]/(n₁+n₂−2)
+
+(x̄₁−x̄₂) ± t_{α/2}·s_p·√(1/n₁+1/n₂)
+ν = n₁+n₂−2</div>
+          <div style="font-size:.8rem;color:#8b949e;margin-top:.5rem;">Ex 6.12: s²_p = 19.52, t₀.₀₂₅(23) = 2.069<br>
+            <span style="color:var(--accent3)">−0.72 &lt; μ₁−μ₂ &lt; 6.72</span></div>
+        </div>
+        <div class="card card-red">
+          <div class="def-tag" style="color:var(--accent4)">Definition 6.10 — σ₁²≠σ₂², n₁,n₂ &lt; 30</div>
+          <p style="font-size:.83rem;color:#8b949e;margin-bottom:.5rem;">ใช้ Welch's approximation</p>
+          <div class="formula" style="border-color:rgba(247,129,102,.2);color:#ffb3a7;font-size:.8rem;">(x̄₁−x̄₂) ± t_{α/2}·√(s₁²/n₁+s₂²/n₂)
+
+ν = (s₁²/n₁+s₂²/n₂)²
+    / [(s₁²/n₁)²/(n₁−1) + (s₂²/n₂)²/(n₂−1)]</div>
+          <div style="font-size:.8rem;color:#8b949e;margin-top:.5rem;">Ex 6.13: Tires A vs B, ν=21<br>
+            <span style="color:var(--accent4)">−2936 &lt; μ₂−μ₁ &lt; 6536</span></div>
+        </div>
+      </div>
+
+      <!-- Paired observations -->
+      <div class="card card-purple" style="margin-top:1rem;">
+        <div class="def-tag" style="color:var(--accent5)">Definition 6.11 — Paired Observations</div>
+        <h3>ข้อมูลจับคู่ (Dependent Samples)</h3>
+        <p style="font-size:.9rem;">เมื่อสองกลุ่มไม่เป็นอิสระกัน (เช่น วัดก่อน-หลัง) ให้คำนวณ dᵢ = x₁ᵢ − x₂ᵢ</p>
+        <div class="formula" style="border-color:rgba(188,140,255,.2);color:#e2c5ff;">d̄ = Σdᵢ/n  ,  s_d = √[Σdᵢ²−nd̄²]/(n−1)
+
+d̄ − t_{α/2}·(s_d/√n) &lt; μ_D &lt; d̄ + t_{α/2}·(s_d/√n)
+ν = n−1</div>
+        <div style="background:var(--bg3);border-radius:8px;padding:.75rem;margin-top:.5rem;font-size:.83rem;color:#8b949e;">
+          <strong>Ex 6.14:</strong> โปรแกรมเมอร์ 12 คน, ภาษา 1 vs ภาษา 2<br>
+          d̄ = 0.67, s_d = 2.96, t₀.₀₂₅(11) = 2.201<br>
+          <span style="color:var(--accent5)">−1.21 &lt; μ_D &lt; 2.55</span>
+        </div>
+      </div>
+
+      <!-- Decision flowchart style -->
+      <h3 style="margin-top:2rem;">เลือกสูตรอย่างไร?</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>เงื่อนไข</th><th>สูตร</th><th>ν (df)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>รู้ σ₁,σ₂ หรือ n₁,n₂≥30</td><td class="hi">Z, ใช้ σ หรือ s</td><td class="green">—</td></tr>
+          <tr><td>ไม่รู้ σ, n&lt;30, σ₁²=σ₂²</td><td class="blue">t, Pooled s_p</td><td class="blue">n₁+n₂−2</td></tr>
+          <tr><td>ไม่รู้ σ, n&lt;30, σ₁²≠σ₂²</td><td style="color:var(--accent4)">t, Welch</td><td style="color:var(--accent4)">Welch's formula</td></tr>
+          <tr><td>ข้อมูลจับคู่</td><td style="color:var(--accent5)">t บน dᵢ</td><td style="color:var(--accent5)">n−1</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 6.6 PROPORTION -->
+    <section id="s66">
+      <span class="section-num">§ 6.6</span>
+      <h2>Single Sample: Estimating a Proportion</h2>
+      <span class="dtag z">Z-distribution</span>
+      <p class="intro-text">ประมาณ <span class="hl">สัดส่วน p</span> ของประชากร เช่น สัดส่วนของเสีย, สัดส่วนผู้สนับสนุน</p>
+
+      <div class="def-block">
+        <span class="def-tag">Point Estimator</span>
+        <p>p<sup class="h">^</sup> = X/n  (X คือจำนวน success ใน n trials)</p>
+        <br>
+        <p>E(p<sup class="h">^</sup>) = p  →  p<sup class="h">^</sup> เป็น unbiased estimator ของ p</p>
+        <p>Var(p<sup class="h">^</sup>) = pq/n  ,  q = 1−p</p>
+      </div>
+
+      <div class="card card-blue">
+        <div class="def-tag" style="color:var(--accent2)">Definition 6.12 — CI สำหรับ p</div>
+        <div class="formula">p<sup class="h">^</sup> − z_{α/2}·√(p<sup class="h">^</sup>q<sup class="h">^</sup>/n) &lt; p &lt; p<sup class="h">^</sup> + z_{α/2}·√(p<sup class="h">^</sup>q<sup class="h">^</sup>/n)
+
+<span class="comment">Z = (p<sup class="h">^</sup> − p) / √(pq/n) ~ N(0,1)  เมื่อ n ใหญ่พอ</span></div>
+        <div style="background:var(--bg3);border-radius:8px;padding:1rem;margin-top:.75rem;">
+          <div style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--muted);margin-bottom:.5rem;">Example 6.15 — ครัวเรือนที่ subscribe HBO (n=500, x=340)</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-n">1</div>
+              <div class="step-body">p<sup class="h">^</sup> = 340/500 = <strong>0.68</strong>, q<sup class="h">^</sup> = 0.32</div>
+            </div>
+            <div class="step">
+              <div class="step-n">2</div>
+              <div class="step-body">95% CI: z₀.₀₂₅ = 1.96<br>0.68 ± 1.96·√(0.68×0.32/500)</div>
+            </div>
+            <div class="step">
+              <div class="step-n">3</div>
+              <div class="step-body"><strong style="color:var(--accent2)">0.64 &lt; p &lt; 0.72</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-grid" style="margin-top:1rem;">
+        <div class="card card-green">
+          <div class="def-tag" style="color:var(--accent3)">Theorem 6.5 — Sample Size (ทราบ p<sup class="h">^</sup>)</div>
+          <div class="formula" style="border-color:rgba(63,185,80,.2);color:#b5f0c3;font-size:.85rem;">n = z²_{α/2}·p<sup class="h">^</sup>q<sup class="h">^</sup> / e²
+
+Ex 6.16: p<sup class="h">^</sup>=0.68, e=0.02, 95%
+n = (1.96)²(0.68)(0.32)/(0.02)²
+  = <strong>2090</strong></div>
+        </div>
+        <div class="card card-accent">
+          <div class="def-tag" style="color:var(--accent)">Theorem 6.6 — Sample Size (ไม่ทราบ p<sup class="h">^</sup>)</div>
+          <div class="formula" style="font-size:.85rem;">n = z²_{α/2} / (4e²)
+
+<span class="comment">ใช้เมื่อไม่มีข้อมูลเดิม
+Conservative → p<sup class="h">^</sup>q<sup class="h">^</sup> = 0.25 (max)</span>
+Ex 6.17: e=0.02, 95%
+n = (1.96)²/(4×0.02²) = <strong>2401</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6.7 TWO PROPORTIONS -->
+    <section id="s67">
+      <span class="section-num">§ 6.7</span>
+      <h2>Two Samples: Estimating p₁ − p₂</h2>
+      <p class="intro-text">เปรียบเทียบ <span class="hl2">สัดส่วนสองกลุ่ม</span> ที่เป็นอิสระต่อกัน</p>
+
+      <div class="def-block">
+        <span class="def-tag">Definition 6.13 — CI สำหรับ p₁ − p₂</span>
+        <p>Point estimate: p<sup class="h">^</sup>₁ − p<sup class="h">^</sup>₂ = x₁/n₁ − x₂/n₂</p>
+      </div>
+
+      <div class="formula">(p<sup class="h">^</sup>₁−p<sup class="h">^</sup>₂) ± z_{α/2}·√(p<sup class="h">^</sup>₁q<sup class="h">^</sup>₁/n₁ + p<sup class="h">^</sup>₂q<sup class="h">^</sup>₂/n₂)
+
+<span class="comment">Z = [(p<sup class="h">^</sup>₁−p<sup class="h">^</sup>₂)−(p₁−p₂)] / √(p₁q₁/n₁+p₂q₂/n₂) ~ N(0,1)</span></div>
+
+      <div class="card card-blue" style="margin-top:1rem;">
+        <div class="def-tag" style="color:var(--accent2)">Example 6.18 — กระบวนการผลิต (เก่า vs ใหม่)</div>
+        <p style="font-size:.83rem;color:#8b949e;">กระบวนการเก่า: x=75 ของเสียจาก 1500 | กระบวนการใหม่: x=80 ของเสียจาก 2000</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-n">1</div>
+            <div class="step-body">p<sup class="h">^</sup>₁ = 75/1500 = 0.05, p<sup class="h">^</sup>₂ = 80/2000 = 0.04<br>Point estimate: 0.05−0.04 = <strong>0.01</strong></div>
+          </div>
+          <div class="step">
+            <div class="step-n">2</div>
+            <div class="step-body">90% CI: z₀.₀₅ = 1.645<br>SE = √(0.05×0.95/1500 + 0.04×0.96/2000) ≈ 0.0113</div>
+          </div>
+          <div class="step">
+            <div class="step-n">3</div>
+            <div class="step-body"><strong style="color:var(--accent2)">−0.0017 &lt; p₁−p₂ &lt; 0.0217</strong><br>
+              <span style="color:var(--muted);font-size:.83rem;">ช่วงครอบ 0 → ไม่มีหลักฐานว่าต่างกัน</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6.8 VARIANCE -->
+    <section id="s68">
+      <span class="section-num">§ 6.8</span>
+      <h2>Single Sample: Estimating the Variance</h2>
+      <span class="dtag chi">χ² Distribution</span>
+      <p class="intro-text">ใช้ <span class="hl2">Chi-squared distribution</span> สำหรับสร้าง CI ของ σ²</p>
+
+      <div class="card card-purple">
+        <div class="def-tag" style="color:var(--accent5)">Definition 6.14 — CI สำหรับ σ²</div>
+        <div class="formula" style="border-color:rgba(188,140,255,.2);color:#e2c5ff;">χ² = (n−1)S²/σ²  ~  χ²(n−1)
+
+CI สำหรับ σ²:
+(n−1)s² / χ²_{α/2}  &lt; σ² &lt;  (n−1)s² / χ²_{1−α/2}
+
+<span class="comment">χ²_{α/2} = ค่า Chi-squared ที่มีพื้นที่ α/2 ทางขวา
+χ²_{1−α/2} = ค่า Chi-squared ที่มีพื้นที่ α/2 ทางซ้าย</span></div>
+      </div>
+
+      <div class="card card-purple" style="margin-top:1rem;">
+        <div class="def-tag" style="color:var(--accent5)">Example 6.19 — น้ำหนักเมล็ดพันธุ์หญ้า (n=10)</div>
+        <p style="font-size:.83rem;color:#8b949e;margin-bottom:.5rem;">ข้อมูล: 46.4, 46.1, 45.8, 47.0, 46.1, 45.9, 45.8, 46.9, 45.2, 46.0 (decagram)</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-n purple">1</div>
+            <div class="step-body">s² = 0.286 (point estimate ของ σ²)</div>
+          </div>
+          <div class="step">
+            <div class="step-n purple">2</div>
+            <div class="step-body">χ²₀.₀₂₅(9) = 19.023 | χ²₀.₉₇₅(9) = 2.7</div>
+          </div>
+          <div class="step">
+            <div class="step-n purple">3</div>
+            <div class="step-body">(9)(0.286)/19.023 &lt; σ² &lt; (9)(0.286)/2.7<br>
+              <strong style="color:var(--accent5)">0.135 &lt; σ² &lt; 0.953</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note" style="background:rgba(188,140,255,.06);border-color:rgba(188,140,255,.2);color:#c8a8ff;">
+        <strong>สังเกต:</strong> Chi-squared distribution ไม่สมมาตร ดังนั้น CI สำหรับ σ² ก็ไม่สมมาตรรอบ s²
+        ต้องใช้สองค่าคริติคัลแยกกัน (ซ้าย/ขวา)
+      </div>
+    </section>
+
+    <!-- 6.9 RATIO OF VARIANCES -->
+    <section id="s69">
+      <span class="section-num">§ 6.9</span>
+      <h2>Two Samples: Estimating σ₁²/σ₂²</h2>
+      <span class="dtag f">F-Distribution</span>
+      <p class="intro-text">ใช้ <span class="hl">F-distribution</span> เปรียบเทียบความแปรปรวนสองกลุ่ม</p>
+
+      <div class="card card-accent">
+        <div class="def-tag" style="color:var(--accent)">Definition 6.15 — CI สำหรับ σ₁²/σ₂²</div>
+        <div class="formula">F = σ₂²S₁² / (σ₁²S₂²)  ~  F(ν₁=n₁−1, ν₂=n₂−1)
+
+(s₁²/s₂²)·[1/f_{α/2}(ν₁,ν₂)]  &lt; σ₁²/σ₂² &lt;  (s₁²/s₂²)·f_{α/2}(ν₂,ν₁)
+
+<span class="comment">f_{α/2}(ν₁,ν₂) = F critical value ที่มีพื้นที่ α/2 ทางขวา
+คุณสมบัติ: f_{1−α/2}(ν₁,ν₂) = 1/f_{α/2}(ν₂,ν₁)</span></div>
+      </div>
+
+      <div class="card card-accent" style="margin-top:1rem;">
+        <div class="def-tag" style="color:var(--accent)">Example 6.20 — บริษัทภาพยนตร์ 2 บริษัท</div>
+        <p style="font-size:.83rem;color:#8b949e;margin-bottom:.5rem;">
+          บ.I: 103, 94, 110, 87, 98 (n₁=5) | บ.II: 97, 82, 123, 92, 175, 88, 118 (n₂=7)
+        </p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-n amber">1</div>
+            <div class="step-body">s₁² = 76.3, s₂² = 1039.6 | s₁²/s₂² ≈ 0.073</div>
+          </div>
+          <div class="step">
+            <div class="step-n amber">2</div>
+            <div class="step-body">ν₁=4, ν₂=6 | f₀.₀₅(6,4) = 6.16, f₀.₀₅(4,6) = 4.53</div>
+          </div>
+          <div class="step">
+            <div class="step-n amber">3</div>
+            <div class="step-body">90% CI: 0.073/4.53 &lt; σ₁²/σ₂² &lt; 0.073×6.16<br>
+              <strong style="color:var(--accent)">0.0162 &lt; σ₁²/σ₂² &lt; 0.4521</strong><br>
+              <span style="color:var(--muted);font-size:.83rem;">ไม่ครอบ 1 → σ₁² ≠ σ₂²</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section id="calc">
+      <span class="section-num">§ TOOL</span>
+      <h2>Confidence Interval Calculator</h2>
+      <p class="intro-text">คำนวณ CI สำหรับ μ ด้วย Z หรือ t distribution</p>
+
+      <div class="interactive">
+        <h3>⟡ CI for Mean — เลือก Case ที่ต้องการ</h3>
+        <div class="ctrl-row">
+          <label>Case</label>
+          <select id="ci-case" onchange="updateCI()">
+            <option value="z">Z: σ ทราบ หรือ n ≥ 30</option>
+            <option value="t">t: σ ไม่ทราบ, n &lt; 30</option>
+          </select>
+        </div>
+        <div class="ctrl-row">
+          <label>Sample mean x̄</label>
+          <input type="range" min="0" max="500" value="230" step="1" id="ci-xbar" oninput="updateCI()">
+          <span class="ctrl-val" id="v-xbar">230</span>
+        </div>
+        <div class="ctrl-row">
+          <label>σ หรือ s (std deviation)</label>
+          <input type="range" min="1" max="100" value="15" step="1" id="ci-s" oninput="updateCI()">
+          <span class="ctrl-val" id="v-s">15</span>
+        </div>
+        <div class="ctrl-row">
+          <label>n (sample size)</label>
+          <input type="range" min="2" max="200" value="36" step="1" id="ci-n" oninput="updateCI()">
+          <span class="ctrl-val" id="v-n">36</span>
+        </div>
+        <div class="ctrl-row">
+          <label>Confidence Level (%)</label>
+          <select id="ci-conf" onchange="updateCI()">
+            <option value="0.10">90%</option>
+            <option value="0.05" selected>95%</option>
+            <option value="0.04">96%</option>
+            <option value="0.02">98%</option>
+            <option value="0.01">99%</option>
+          </select>
+        </div>
+        <div class="result-row">
+          <div class="result-chip">
+            <div class="r-lbl">Critical Value</div>
+            <div class="r-val" id="r-crit" style="color:var(--accent)">1.96</div>
+          </div>
+          <div class="result-chip">
+            <div class="r-lbl">Std Error</div>
+            <div class="r-val" id="r-se">2.500</div>
+          </div>
+          <div class="result-chip">
+            <div class="r-lbl">Margin of Error</div>
+            <div class="r-val" id="r-me" style="color:var(--accent4)">4.900</div>
+          </div>
+          <div class="result-chip">
+            <div class="r-lbl">Lower Bound</div>
+            <div class="r-val" id="r-lo" style="color:var(--accent2)">225.1</div>
+          </div>
+          <div class="result-chip">
+            <div class="r-lbl">Upper Bound</div>
+            <div class="r-val" id="r-hi" style="color:var(--accent2)">234.9</div>
+          </div>
+        </div>
+        <div class="result-formula" id="r-formula">CI: 230 ± 1.96 × (15/√36) = (225.10, 234.90)</div>
+        <canvas id="ciChart" width="900" height="180" style="margin-top:1rem;width:100%;"></canvas>
+      </div>
+
+      <!-- Sample Size Calculator -->
+      <div class="interactive">
+        <h3>⟡ Sample Size Calculator</h3>
+        <div class="ctrl-row">
+          <label>σ (population std dev)</label>
+          <input type="range" min="1" max="100" value="30" step="1" id="ss-sigma" oninput="updateSS()">
+          <span class="ctrl-val" id="v-ss-sigma">30</span>
+        </div>
+        <div class="ctrl-row">
+          <label>Allowable error e</label>
+          <input type="range" min="1" max="50" value="5" step="1" id="ss-e" oninput="updateSS()">
+          <span class="ctrl-val" id="v-ss-e">5</span>
+        </div>
+        <div class="ctrl-row">
+          <label>Confidence Level</label>
+          <select id="ss-conf" onchange="updateSS()">
+            <option value="0.10">90%  (z=1.645)</option>
+            <option value="0.05" selected>95%  (z=1.96)</option>
+            <option value="0.01">99%  (z=2.575)</option>
+          </select>
+        </div>
+        <div class="stat-row" style="margin-top:1rem;">
+          <div class="stat-chip">
+            <span class="stat-val" id="ss-n" style="color:var(--accent2)">—</span>
+            <span class="stat-lbl">Required n</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-val" id="ss-z" style="color:var(--accent)">—</span>
+            <span class="stat-lbl">z_{α/2}</span>
+          </div>
+          <div class="stat-chip">
+            <span class="stat-val" id="ss-me" style="color:var(--accent4)">—</span>
+            <span class="stat-lbl">Actual error</span>
+          </div>
+        </div>
+        <div class="result-formula" id="ss-formula">n = (z·σ/e)²</div>
+      </div>
+
+      <!-- Full Summary Table -->
+      <h3 style="margin-top:2rem;">สรุปสูตร CI ทั้งหมด</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>พารามิเตอร์</th>
+            <th>เงื่อนไข</th>
+            <th>สูตร CI</th>
+            <th>Distribution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="3" class="hi">μ</td>
+            <td>รู้ σ</td>
+            <td>x̄ ± z_{α/2}·σ/√n</td>
+            <td class="green">Z</td>
+          </tr>
+          <tr>
+            <td>ไม่รู้ σ, n≥30</td>
+            <td>x̄ ± z_{α/2}·s/√n</td>
+            <td class="green">Z</td>
+          </tr>
+          <tr>
+            <td>ไม่รู้ σ, n&lt;30</td>
+            <td>x̄ ± t_{α/2}·s/√n</td>
+            <td style="color:var(--accent4)">t(n−1)</td>
+          </tr>
+          <tr>
+            <td rowspan="3" class="blue">μ₁−μ₂</td>
+            <td>รู้ σ₁,σ₂ / n≥30</td>
+            <td>(x̄₁−x̄₂) ± z·√(σ₁²/n₁+σ₂²/n₂)</td>
+            <td class="green">Z</td>
+          </tr>
+          <tr>
+            <td>ไม่รู้ σ, n&lt;30, σ₁²=σ₂²</td>
+            <td>(x̄₁−x̄₂) ± t·s_p·√(1/n₁+1/n₂)</td>
+            <td style="color:var(--accent4)">t(n₁+n₂−2)</td>
+          </tr>
+          <tr>
+            <td>ไม่รู้ σ, n&lt;30, σ₁²≠σ₂²</td>
+            <td>(x̄₁−x̄₂) ± t·√(s₁²/n₁+s₂²/n₂)</td>
+            <td style="color:var(--accent4)">t(Welch ν)</td>
+          </tr>
+          <tr>
+            <td class="blue">μ_D (Paired)</td>
+            <td>dᵢ = x₁ᵢ−x₂ᵢ</td>
+            <td>d̄ ± t_{α/2}·s_d/√n</td>
+            <td style="color:var(--accent4)">t(n−1)</td>
+          </tr>
+          <tr>
+            <td class="hi">p</td>
+            <td>n ใหญ่พอ</td>
+            <td>p<sup class="h">^</sup> ± z_{α/2}·√(p<sup class="h">^</sup>q<sup class="h">^</sup>/n)</td>
+            <td class="green">Z</td>
+          </tr>
+          <tr>
+            <td class="blue">p₁−p₂</td>
+            <td>n₁,n₂ ใหญ่พอ</td>
+            <td>(p<sup class="h">^</sup>₁−p<sup class="h">^</sup>₂) ± z·√(p<sup class="h">^</sup>₁q<sup class="h">^</sup>₁/n₁+p<sup class="h">^</sup>₂q<sup class="h">^</sup>₂/n₂)</td>
+            <td class="green">Z</td>
+          </tr>
+          <tr>
+            <td class="hi">σ²</td>
+            <td>ประชากรปกติ</td>
+            <td>(n−1)s²/χ²_{α/2} &lt; σ² &lt; (n−1)s²/χ²_{1−α/2}</td>
+            <td style="color:var(--accent5)">χ²(n−1)</td>
+          </tr>
+          <tr>
+            <td class="hi">σ₁²/σ₂²</td>
+            <td>ทั้งสองประชากรปกติ</td>
+            <td>(s₁²/s₂²)·1/f_{α/2}(ν₁,ν₂) &lt; σ₁²/σ₂² &lt; (s₁²/s₂²)·f_{α/2}(ν₂,ν₁)</td>
+            <td class="hi">F(ν₁,ν₂)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <a class="back-top" href="#hero">↑ top</a>
+
+  <script>
+    // Normal CDF approximation
+    function normalCDF(z) {
+      const t = 1 / (1 + 0.2316419 * Math.abs(z));
+      const d = 0.3989423 * Math.exp(-z * z / 2);
+      const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+      return z > 0 ? 1 - p : p;
+    }
+    function normalPDF(x) { return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI); }
+
+    // t-distribution critical values (approx lookup)
+    function tCritical(alpha_half, df) {
+      // Rough lookup table for common values
+      const table = {
+        0.025: { 1:12.706,2:4.303,3:3.182,4:2.776,5:2.571,6:2.447,7:2.365,8:2.306,9:2.262,
+                 10:2.228,11:2.201,12:2.179,13:2.160,14:2.145,15:2.131,16:2.120,17:2.110,
+                 18:2.101,19:2.093,20:2.086,21:2.080,22:2.074,23:2.069,24:2.064,25:2.060,
+                 26:2.056,27:2.052,28:2.048,29:2.045,30:2.042 },
+        0.05:  { 1:6.314,2:2.920,3:2.353,4:2.132,5:2.015,6:1.943,7:1.895,8:1.860,9:1.833,
+                 10:1.812,11:1.796,12:1.782,13:1.771,14:1.761,15:1.753,16:1.746,17:1.740,
+                 18:1.734,19:1.729,20:1.725,25:1.708,30:1.697 },
+        0.005: { 1:63.657,2:9.925,3:5.841,4:4.604,5:4.032,6:3.707,7:3.499,8:3.355,9:3.250,
+                 10:3.169,11:3.106,12:3.055,13:3.012,14:2.977,15:2.947,20:2.845,25:2.787,30:2.750 },
+        0.01:  { 1:31.821,2:6.965,3:4.541,4:3.747,5:3.365,6:3.143,7:2.998,8:2.896,9:2.821,
+                 10:2.764,15:2.602,20:2.528,25:2.485,30:2.457 },
+        0.02:  { 1:15.894,2:4.849,3:3.482,4:2.999,5:2.757,6:2.612,7:2.517,8:2.449,9:2.398,
+                 10:2.359,15:2.249,20:2.197,25:2.167,30:2.147 }
+      };
+      const row = table[alpha_half];
+      if (!row) return 1.96;
+      if (df >= 120) return { 0.025:1.96, 0.05:1.645, 0.005:2.576, 0.01:2.326, 0.02:2.054 }[alpha_half] || 1.96;
+      let closest = null, closestDiff = Infinity;
+      for (const k of Object.keys(row)) {
+        const diff = Math.abs(parseInt(k) - df);
+        if (diff < closestDiff) { closestDiff = diff; closest = parseInt(k); }
+      }
+      return row[closest] || 1.96;
+    }
+
+    // Z critical values
+    function zCritical(alpha_half) {
+      const map = { 0.05: 1.645, 0.025: 1.96, 0.02: 2.054, 0.01: 2.326, 0.005: 2.576 };
+      return map[alpha_half] || 1.96;
+    }
+
+    // ---- NAV HIGHLIGHT ----
+    window.addEventListener('scroll', () => {
+      const sections = [...document.querySelectorAll('section,[id]')];
+      const links = document.querySelectorAll('.nav-link');
+      let cur = 'hero';
+      sections.forEach(s => { if (s.id && window.scrollY >= s.offsetTop - 80) cur = s.id; });
+      links.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#' + cur); });
+    });
+
+    // ---- HERO CHART — show confidence intervals at different n ----
+    (function () {
+      const c = document.getElementById('heroChart');
+      const ctx = c.getContext('2d');
+      const W = c.width, H = c.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const configs = [
+        { mu: 150, se: 40, color: 'rgba(232,184,75,0.7)', label: 'n=4  (wide CI)', n: 4 },
+        { mu: 450, se: 20, color: 'rgba(88,166,255,0.7)', label: 'n=16', n: 16 },
+        { mu: 750, se: 10, color: 'rgba(63,185,80,0.7)', label: 'n=64  (narrow CI)', n: 64 },
+      ];
+
+      configs.forEach(cv => {
+        // draw normal curve
+        ctx.beginPath();
+        let first = true;
+        for (let x = 0; x <= W; x += 2) {
+          const z = (x - cv.mu) / cv.se;
+          const y = H - 25 - normalPDF(z) * cv.se * 3.8;
+          if (first) { ctx.moveTo(x, y); first = false; } else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = cv.color; ctx.lineWidth = 2.5; ctx.stroke();
+
+        // shade 95% CI region
+        const lo = cv.mu - 1.96 * cv.se, hi = cv.mu + 1.96 * cv.se;
+        ctx.beginPath();
+        ctx.moveTo(lo, H - 25);
+        for (let x = lo; x <= hi; x += 1) {
+          const z = (x - cv.mu) / cv.se;
+          ctx.lineTo(x, H - 25 - normalPDF(z) * cv.se * 3.8);
+        }
+        ctx.lineTo(hi, H - 25); ctx.closePath();
+        ctx.fillStyle = cv.color.replace('0.7', '0.15'); ctx.fill();
+
+        // CI bracket at bottom
+        ctx.beginPath();
+        ctx.moveTo(lo, H - 12); ctx.lineTo(hi, H - 12);
+        ctx.strokeStyle = cv.color; ctx.lineWidth = 3; ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(lo, H - 17); ctx.lineTo(lo, H - 7);
+        ctx.moveTo(hi, H - 17); ctx.lineTo(hi, H - 7);
+        ctx.stroke();
+
+        // label
+        ctx.font = '11px "DM Mono", monospace';
+        ctx.fillStyle = cv.color.replace('0.7', '1');
+        ctx.fillText(cv.label, cv.mu - 30, H - 1);
+      });
+
+      ctx.fillStyle = 'rgba(125,133,144,0.7)'; ctx.font = '11px "DM Mono",monospace';
+      ctx.fillText('n↑  →  SE↓  →  CI แคบลง  →  แม่นยำขึ้น', W / 2 - 130, 20);
+    })();
+
+    // ---- CI Calculator ----
+    function updateCI() {
+      const caseType = document.getElementById('ci-case').value;
+      const xbar = +document.getElementById('ci-xbar').value;
+      const s = +document.getElementById('ci-s').value;
+      const n = +document.getElementById('ci-n').value;
+      const alpha = +document.getElementById('ci-conf').value;
+
+      document.getElementById('v-xbar').textContent = xbar;
+      document.getElementById('v-s').textContent = s;
+      document.getElementById('v-n').textContent = n;
+
+      const se = s / Math.sqrt(n);
+      let crit, critLabel;
+
+      if (caseType === 'z') {
+        crit = zCritical(alpha / 2);
+        critLabel = `z = ${crit.toFixed(3)}`;
+      } else {
+        const df = n - 1;
+        crit = tCritical(alpha / 2, df);
+        critLabel = `t(${df}) = ${crit.toFixed(3)}`;
+      }
+
+      const me = crit * se;
+      const lo = xbar - me;
+      const hi = xbar + me;
+      const confPct = Math.round((1 - alpha) * 100);
+
+      document.getElementById('r-crit').textContent = crit.toFixed(3);
+      document.getElementById('r-se').textContent = se.toFixed(3);
+      document.getElementById('r-me').textContent = me.toFixed(3);
+      document.getElementById('r-lo').textContent = lo.toFixed(2);
+      document.getElementById('r-hi').textContent = hi.toFixed(2);
+      document.getElementById('r-formula').innerHTML =
+        `${confPct}% CI: ${xbar} ± ${critLabel} × (${s}/√${n}) = <strong style="color:var(--accent2)">(${lo.toFixed(2)}, ${hi.toFixed(2)})</strong>`;
+
+      drawCIChart(xbar, se, crit, lo, hi);
+    }
+
+    function drawCIChart(xbar, se, crit, lo, hi) {
+      const c = document.getElementById('ciChart');
+      const ctx = c.getContext('2d');
+      const W = c.width, H = c.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const cx = W / 2;
+      const scale = W / (8 * se);
+      const yScale = H * 3.5;
+
+      // shade CI area
+      ctx.beginPath();
+      ctx.moveTo(cx + (-crit) * se * scale, H - 20);
+      for (let z = -crit; z <= crit; z += 0.05) {
+        ctx.lineTo(cx + z * se * scale, H - 20 - normalPDF(z) * yScale);
+      }
+      ctx.lineTo(cx + crit * se * scale, H - 20); ctx.closePath();
+      ctx.fillStyle = 'rgba(88,166,255,0.15)'; ctx.fill();
+
+      // normal curve
+      ctx.beginPath(); let first = true;
+      for (let z = -4; z <= 4; z += 0.05) {
+        const px = cx + z * se * scale;
+        const py = H - 20 - normalPDF(z) * yScale;
+        if (first) { ctx.moveTo(px, py); first = false; } else ctx.lineTo(px, py);
+      }
+      ctx.strokeStyle = 'var(--accent2)'; ctx.lineWidth = 2.5; ctx.stroke();
+
+      // CI lines
+      const loPx = cx - crit * se * scale, hiPx = cx + crit * se * scale;
+      ctx.beginPath();
+      ctx.moveTo(loPx, H - 8); ctx.lineTo(hiPx, H - 8);
+      ctx.strokeStyle = 'var(--accent)'; ctx.lineWidth = 3; ctx.stroke();
+      [loPx, hiPx].forEach(px => {
+        ctx.beginPath(); ctx.moveTo(px, H - 14); ctx.lineTo(px, H - 2);
+        ctx.strokeStyle = 'var(--accent)'; ctx.lineWidth = 2; ctx.stroke();
+      });
+
+      // mu line
+      ctx.beginPath(); ctx.moveTo(cx, H - 20); ctx.lineTo(cx, H - 20 - normalPDF(0) * yScale + 5);
+      ctx.strokeStyle = 'rgba(232,184,75,0.6)'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]); ctx.stroke(); ctx.setLineDash([]);
+
+      // axis
+      ctx.beginPath(); ctx.moveTo(0, H - 20); ctx.lineTo(W, H - 20);
+      ctx.strokeStyle = 'rgba(125,133,144,0.3)'; ctx.lineWidth = 1; ctx.stroke();
+
+      // labels
+      ctx.font = '10px "DM Mono",monospace';
+      ctx.fillStyle = 'var(--accent)'; ctx.textAlign = 'center';
+      ctx.fillText(lo.toFixed(1), loPx, H - 1);
+      ctx.fillText(hi.toFixed(1), hiPx, H - 1);
+      ctx.fillStyle = 'rgba(232,184,75,0.8)';
+      ctx.fillText('x̄=' + xbar, cx, H - 1);
+      ctx.textAlign = 'left';
+      ctx.fillStyle = 'rgba(88,166,255,0.8)';
+      ctx.fillText('95% CI', loPx + (hiPx - loPx) / 2 - 20, 18);
+    }
+    updateCI();
+
+    // ---- Sample Size Calculator ----
+    function updateSS() {
+      const sigma = +document.getElementById('ss-sigma').value;
+      const e = +document.getElementById('ss-e').value;
+      const alpha = +document.getElementById('ss-conf').value;
+      document.getElementById('v-ss-sigma').textContent = sigma;
+      document.getElementById('v-ss-e').textContent = e;
+
+      const zMap = { '0.10': 1.645, '0.05': 1.96, '0.01': 2.575 };
+      const z = zMap[alpha] || 1.96;
+      const n = Math.ceil((z * sigma / e) ** 2);
+      const actualError = (z * sigma / Math.sqrt(n)).toFixed(3);
+
+      document.getElementById('ss-n').textContent = n;
+      document.getElementById('ss-z').textContent = z.toFixed(3);
+      document.getElementById('ss-me').textContent = actualError;
+      document.getElementById('ss-formula').innerHTML =
+        `n = (${z}×${sigma}/${e})² = ${((z * sigma / e) ** 2).toFixed(2)} → <strong style="color:var(--accent2)">n = ${n}</strong>`;
+    }
+    updateSS();
+  </script>
+
+</body>
+
+</html>

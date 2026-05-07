@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>สถิติ บทที่ 5 — ชุดครบครัน</title>
+<title>สถิติ บทที่ 5–6 — ชุดครบครัน</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -16,56 +16,34 @@
     --tab-text: #94a3b8;
     --tab-active-text: #f8fafc;
     --tab-active-bg: #1e293b;
-    --accent: #6366f1;
+    --accent:  #6366f1;
     --accent2: #e8b84b;
     --accent3: #34d399;
+    --accent4: #f472b6;
 
-    /* Safe area insets for iPhone notch / home indicator */
-    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-top:    env(safe-area-inset-top,    0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
-    --safe-left: env(safe-area-inset-left, 0px);
-    --safe-right: env(safe-area-inset-right, 0px);
+    --safe-left:   env(safe-area-inset-left,   0px);
+    --safe-right:  env(safe-area-inset-right,  0px);
   }
 
   html, body {
     height: 100%;
-    /* Use dvh on modern iOS/Android for accurate viewport height */
     height: 100dvh;
     overflow: hidden;
     font-family: 'Sarabun', sans-serif;
     background: var(--tab-bg);
-    /* Prevent rubber-band scroll on iOS */
     overscroll-behavior: none;
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* ===== LAYOUT SHELL ===== */
   #app {
     display: flex;
     flex-direction: column;
     height: 100%;
     height: 100dvh;
-    /* Respect iPhone safe areas */
     padding-top: var(--safe-top);
     padding-bottom: var(--safe-bottom);
-  }
-
-  /* ===== TOP BRAND BAR (desktop only) ===== */
-  #brand-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 36px;
-    background: var(--tab-bg);
-    border-bottom: 1px solid var(--tab-border);
-    flex-shrink: 0;
-  }
-
-  .tab-brand {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--accent2);
-    letter-spacing: .14em;
   }
 
   /* ===== FRAME WRAPPER ===== */
@@ -84,15 +62,10 @@
     border: none;
     display: none;
     background: white;
-    /* Smooth scrolling inside iframe on iOS */
     -webkit-overflow-scrolling: touch;
   }
+  .page-frame.active { display: block; }
 
-  .page-frame.active {
-    display: block;
-  }
-
-  /* Loading overlay */
   .frame-loading {
     position: absolute;
     inset: 0;
@@ -103,11 +76,7 @@
     z-index: 10;
     transition: opacity .3s;
   }
-
-  .frame-loading.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
+  .frame-loading.hidden { opacity: 0; pointer-events: none; }
 
   .loading-inner {
     text-align: center;
@@ -117,29 +86,89 @@
   }
 
   .spinner {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     border: 2px solid rgba(255,255,255,0.08);
     border-top-color: var(--accent);
     border-radius: 50%;
     animation: spin .7s linear infinite;
     margin: 0 auto 12px;
   }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
+  /* ===== NAV SHELL — mobile: bottom, desktop: top ===== */
+  #nav-shell {
+    flex-shrink: 0;
+    background: var(--tab-bg);
+    border-top: 1px solid var(--tab-border);
+    display: flex;
+    flex-direction: column;
   }
 
-  /* ===== BOTTOM TAB BAR (mobile-first) ===== */
+  /* ===== UNIT SELECTOR ===== */
+  #unit-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    padding: 8px 20px;
+    border-bottom: 1px solid var(--tab-border);
+    flex-shrink: 0;
+  }
+
+  .unit-pill {
+    display: flex;
+    width: 100%;
+    max-width: 300px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--tab-border);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 3px;
+  }
+
+  .unit-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--tab-text);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: .02em;
+    border-radius: 7px;
+    transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .unit-btn[data-unit="5"].active {
+    background: var(--accent2);
+    color: #0f172a;
+    box-shadow: 0 1px 6px rgba(0,0,0,.35);
+  }
+  .unit-btn[data-unit="6"].active {
+    background: var(--accent4);
+    color: #0f172a;
+    box-shadow: 0 1px 6px rgba(0,0,0,.35);
+  }
+
+  /* ===== SUB-TAB BAR ===== */
   #tab-bar {
     display: flex;
     align-items: stretch;
-    background: var(--tab-bg);
-    border-top: 1px solid var(--tab-border);
-    height: 60px;
-    flex-shrink: 0;
-    /* Extra padding for iPhone home indicator */
+    height: 58px;
     padding-bottom: max(var(--safe-bottom), 4px);
+  }
+
+  .tab-group {
+    display: flex;
+    flex: 1;
+    align-items: stretch;
   }
 
   .tab-btn {
@@ -160,32 +189,15 @@
     letter-spacing: .01em;
     border-top: 2px solid transparent;
     transition: all .18s ease;
-    /* Prevent text overflow on narrow screens */
     overflow: hidden;
     -webkit-tap-highlight-color: transparent;
-    /* Touch target minimum */
     min-height: 44px;
   }
+  .tab-btn:active { background: rgba(255,255,255,0.04); }
+  .tab-btn.active { color: var(--tab-active-text); background: var(--tab-active-bg); }
 
-  .tab-btn:active {
-    background: rgba(255,255,255,0.04);
-  }
-
-  .tab-btn.active {
-    color: var(--tab-active-text);
-    border-top-color: var(--accent);
-    background: var(--tab-active-bg);
-  }
-
-  .tab-icon {
-    font-size: 20px;
-    line-height: 1;
-    transition: transform .18s ease;
-  }
-
-  .tab-btn.active .tab-icon {
-    transform: translateY(-1px) scale(1.1);
-  }
+  .tab-icon { font-size: 20px; line-height: 1; transition: transform .18s ease; }
+  .tab-btn.active .tab-icon { transform: translateY(-1px) scale(1.1); }
 
   .tab-label {
     font-size: 10px;
@@ -196,37 +208,35 @@
     padding: 0 2px;
   }
 
-  /* Per-tab accent colors */
-  .tab-btn[data-tab="lecture"].active  { border-top-color: var(--accent2); color: var(--accent2); }
-  .tab-btn[data-tab="answers"].active  { border-top-color: var(--accent); color: #a5b4fc; }
-  .tab-btn[data-tab="tutorial"].active { border-top-color: var(--accent3); color: var(--accent3); }
+  /* Mobile accent colours */
+  #tabs-5 .tab-btn[data-tab="lecture5"].active  { border-top-color: var(--accent2); color: var(--accent2); }
+  #tabs-5 .tab-btn[data-tab="answers5"].active  { border-top-color: var(--accent);  color: #a5b4fc; }
+  #tabs-5 .tab-btn[data-tab="tutorial5"].active { border-top-color: var(--accent3); color: var(--accent3); }
+  #tabs-6 .tab-btn[data-tab="lecture6"].active  { border-top-color: var(--accent4); color: var(--accent4); }
+  #tabs-6 .tab-btn[data-tab="answers6"].active  { border-top-color: var(--accent);  color: #a5b4fc; }
 
-  /* ===== DESKTOP OVERRIDES (≥ 640px) ===== */
+  /* Desktop dot indicators (hidden on mobile) */
+  .tab-dot {
+    display: none;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+
+  /* ===== DESKTOP ≥ 640px ===== */
   @media (min-width: 640px) {
-    #brand-bar { display: flex; }
-
-    /* Move tab bar to the top on desktop */
-    #app {
-      flex-direction: column;
-    }
-
-    #tab-bar {
+    #nav-shell {
       order: -1;
-      height: 52px;
       border-top: none;
       border-bottom: 1px solid var(--tab-border);
-      padding-bottom: 0;
-      padding-left: 12px;
-      gap: 4px;
-      /* Hide brand bar on desktop since tab bar takes over */
+      flex-direction: row;
+      align-items: stretch;
+      height: 52px;
     }
 
-    /* Hide separate brand bar on desktop */
-    #brand-bar { display: none; }
-
-    /* Add brand label back inside tab bar on desktop */
-    #tab-bar::before {
-      content: 'CH.5 · STATS';
+    /* Brand label */
+    #nav-shell::before {
+      content: 'CH.5–6 · STATS';
       font-family: 'DM Mono', monospace;
       font-size: 11px;
       color: var(--accent2);
@@ -234,9 +244,40 @@
       white-space: nowrap;
       display: flex;
       align-items: center;
-      padding-right: 16px;
+      padding: 0 16px;
       border-right: 1px solid var(--tab-border);
-      margin-right: 8px;
+      flex-shrink: 0;
+    }
+
+    #unit-bar {
+      border-bottom: none;
+      border-right: 1px solid var(--tab-border);
+      height: 100%;
+      flex-shrink: 0;
+      padding: 7px 12px;
+    }
+
+    .unit-pill {
+      max-width: none;
+      width: auto;
+      height: 100%;
+    }
+
+    .unit-btn {
+      padding: 0 14px;
+      height: auto;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      border-radius: 6px;
+    }
+
+    #tab-bar {
+      height: 100%;
+      padding-bottom: 0;
+      flex: 1;
+      padding-left: 8px;
     }
 
     .tab-btn {
@@ -252,114 +293,134 @@
       border-bottom: 2px solid transparent;
       font-weight: 400;
     }
+    .tab-btn.active { border-top: none; border-bottom-color: var(--accent); }
 
-    .tab-btn.active {
-      border-top: none;
-      border-bottom-color: var(--accent);
-    }
-
-    .tab-btn[data-tab="lecture"].active  { border-bottom-color: var(--accent2); color: var(--tab-active-text); }
-    .tab-btn[data-tab="answers"].active  { border-bottom-color: var(--accent); color: var(--tab-active-text); }
-    .tab-btn[data-tab="tutorial"].active { border-bottom-color: var(--accent3); color: var(--tab-active-text); }
+    /* Desktop accent colours */
+    #tabs-5 .tab-btn[data-tab="lecture5"].active  { border-bottom-color: var(--accent2); color: var(--tab-active-text); }
+    #tabs-5 .tab-btn[data-tab="answers5"].active  { border-bottom-color: var(--accent);  color: var(--tab-active-text); }
+    #tabs-5 .tab-btn[data-tab="tutorial5"].active { border-bottom-color: var(--accent3); color: var(--tab-active-text); }
+    #tabs-6 .tab-btn[data-tab="lecture6"].active  { border-bottom-color: var(--accent4); color: var(--tab-active-text); }
+    #tabs-6 .tab-btn[data-tab="answers6"].active  { border-bottom-color: var(--accent);  color: var(--tab-active-text); }
 
     .tab-icon { font-size: 14px; }
     .tab-label { font-size: 12px; max-width: none; }
     .tab-btn.active .tab-icon { transform: none; }
 
-    .tab-dot {
-      display: inline-block;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      opacity: 0.5;
-    }
+    .tab-dot { display: inline-block; }
     .tab-btn.active .tab-dot { opacity: 1; }
-    .tab-btn[data-tab="lecture"]  .tab-dot { background: var(--accent2); }
-    .tab-btn[data-tab="answers"]  .tab-dot { background: var(--accent); }
-    .tab-btn[data-tab="tutorial"] .tab-dot { background: var(--accent3); }
-  }
-
-  /* Hide brand bar on mobile */
-  @media (max-width: 639px) {
-    #brand-bar { display: none; }
+    #tabs-5 .tab-btn[data-tab="lecture5"]  .tab-dot { background: var(--accent2); }
+    #tabs-5 .tab-btn[data-tab="answers5"]  .tab-dot { background: var(--accent); }
+    #tabs-5 .tab-btn[data-tab="tutorial5"] .tab-dot { background: var(--accent3); }
+    #tabs-6 .tab-btn[data-tab="lecture6"]  .tab-dot { background: var(--accent4); }
+    #tabs-6 .tab-btn[data-tab="answers6"]  .tab-dot { background: var(--accent); }
   }
 </style>
 </head>
 <body>
 
 <div id="app">
-  <!-- Brand bar (desktop only via CSS) -->
-  <div id="brand-bar">
-    <span class="tab-brand">CH.5 · STATS</span>
-  </div>
 
   <!-- Content area -->
   <div id="frame-wrapper">
-    <div class="frame-loading" id="loading-lecture">
-      <div class="loading-inner">
-        <div class="spinner"></div>
-        กำลังโหลด Lecture Notes…
-      </div>
+
+    <!-- Loading overlays -->
+    <div class="frame-loading"        id="loading-lecture5">
+      <div class="loading-inner"><div class="spinner"></div>กำลังโหลด Lecture Notes บทที่ 5…</div>
     </div>
-    <div class="frame-loading hidden" id="loading-answers">
-      <div class="loading-inner">
-        <div class="spinner"></div>
-        กำลังโหลดเฉลย…
-      </div>
+    <div class="frame-loading hidden" id="loading-answers5">
+      <div class="loading-inner"><div class="spinner"></div>กำลังโหลดเฉลย บทที่ 5…</div>
     </div>
-    <div class="frame-loading hidden" id="loading-tutorial">
-      <div class="loading-inner">
-        <div class="spinner"></div>
-        กำลังโหลด Tutorial…
-      </div>
+    <div class="frame-loading hidden" id="loading-tutorial5">
+      <div class="loading-inner"><div class="spinner"></div>กำลังโหลด Tutorial…</div>
+    </div>
+    <div class="frame-loading hidden" id="loading-lecture6">
+      <div class="loading-inner"><div class="spinner"></div>กำลังโหลด Lecture Notes บทที่ 6…</div>
+    </div>
+    <div class="frame-loading hidden" id="loading-answers6">
+      <div class="loading-inner"><div class="spinner"></div>กำลังโหลดเฉลย บทที่ 6…</div>
     </div>
 
-    <iframe class="page-frame active" id="frame-lecture"
+    <!-- Iframes -->
+    <iframe class="page-frame active" id="frame-lecture5"
             src="unit_5_claude.html"
-            onload="frameLoaded('lecture')">
-    </iframe>
+            onload="frameLoaded('lecture5')"></iframe>
 
-    <iframe class="page-frame" id="frame-answers"
+    <iframe class="page-frame" id="frame-answers5"
             data-src="Answer Chapter 5.html"
-            onload="frameLoaded('answers')">
-    </iframe>
+            onload="frameLoaded('answers5')"></iframe>
 
-    <iframe class="page-frame" id="frame-tutorial"
+    <iframe class="page-frame" id="frame-tutorial5"
             data-src="tutorial_STD5.html"
-            onload="frameLoaded('tutorial')">
-    </iframe>
+            onload="frameLoaded('tutorial5')"></iframe>
+
+    <iframe class="page-frame" id="frame-lecture6"
+            data-src="unit_6_claude.html"
+            onload="frameLoaded('lecture6')"></iframe>
+
+    <iframe class="page-frame" id="frame-answers6"
+            data-src="Answer Chapter 6.html"
+            onload="frameLoaded('answers6')"></iframe>
+
   </div>
 
-  <!-- Tab bar (bottom on mobile, top on desktop) -->
-  <nav id="tab-bar" role="tablist">
-    <button class="tab-btn active" data-tab="lecture"
-            onclick="switchTab('lecture')" id="btn-lecture"
-            role="tab" aria-selected="true" aria-controls="frame-lecture">
-      <span class="tab-icon">📖</span>
-      <span class="tab-dot" aria-hidden="true"></span>
-      <span class="tab-label">Lecture Notes</span>
-    </button>
+  <!-- Navigation shell (bottom on mobile, top on desktop) -->
+  <div id="nav-shell">
 
-    <button class="tab-btn" data-tab="answers"
-            onclick="switchTab('answers')" id="btn-answers"
-            role="tab" aria-selected="false" aria-controls="frame-answers">
-      <span class="tab-icon">✅</span>
-      <span class="tab-dot" aria-hidden="true"></span>
-      <span class="tab-label">เฉลยแบบฝึกหัด</span>
-    </button>
+    <!-- Unit selector -->
+    <div id="unit-bar">
+      <div class="unit-pill">
+        <button class="unit-btn active" data-unit="5" onclick="switchUnit(5)">📘 Unit 5</button>
+        <button class="unit-btn"        data-unit="6" onclick="switchUnit(6)">📗 Unit 6</button>
+      </div>
+    </div>
 
-    <button class="tab-btn" data-tab="tutorial"
-            onclick="switchTab('tutorial')" id="btn-tutorial"
-            role="tab" aria-selected="false" aria-controls="frame-tutorial">
-      <span class="tab-icon">🎓</span>
-      <span class="tab-dot" aria-hidden="true"></span>
-      <span class="tab-label">Interactive Tutorial</span>
-    </button>
-  </nav>
+    <!-- Sub-tabs -->
+    <nav id="tab-bar" role="tablist">
+
+      <div id="tabs-5" class="tab-group">
+        <button class="tab-btn active" data-tab="lecture5" onclick="switchTab('lecture5')"
+                role="tab" aria-selected="true" aria-controls="frame-lecture5">
+          <span class="tab-icon">📖</span>
+          <span class="tab-dot" aria-hidden="true"></span>
+          <span class="tab-label">Lecture Notes</span>
+        </button>
+        <button class="tab-btn" data-tab="answers5" onclick="switchTab('answers5')"
+                role="tab" aria-selected="false" aria-controls="frame-answers5">
+          <span class="tab-icon">✅</span>
+          <span class="tab-dot" aria-hidden="true"></span>
+          <span class="tab-label">เฉลยแบบฝึกหัด</span>
+        </button>
+        <button class="tab-btn" data-tab="tutorial5" onclick="switchTab('tutorial5')"
+                role="tab" aria-selected="false" aria-controls="frame-tutorial5">
+          <span class="tab-icon">🎓</span>
+          <span class="tab-dot" aria-hidden="true"></span>
+          <span class="tab-label">Interactive Tutorial</span>
+        </button>
+      </div>
+
+      <div id="tabs-6" class="tab-group" style="display:none">
+        <button class="tab-btn active" data-tab="lecture6" onclick="switchTab('lecture6')"
+                role="tab" aria-selected="true" aria-controls="frame-lecture6">
+          <span class="tab-icon">📖</span>
+          <span class="tab-dot" aria-hidden="true"></span>
+          <span class="tab-label">Lecture Notes</span>
+        </button>
+        <button class="tab-btn" data-tab="answers6" onclick="switchTab('answers6')"
+                role="tab" aria-selected="false" aria-controls="frame-answers6">
+          <span class="tab-icon">✅</span>
+          <span class="tab-dot" aria-hidden="true"></span>
+          <span class="tab-label">เฉลยแบบฝึกหัด</span>
+        </button>
+      </div>
+
+    </nav>
+  </div>
 </div>
 
 <script>
-  const loaded = { lecture: false, answers: false, tutorial: false };
+  const loaded = {};
+  const activeTab = { 5: 'lecture5', 6: 'lecture6' };
+  let currentUnit = 5;
 
   function frameLoaded(name) {
     loaded[name] = true;
@@ -367,28 +428,37 @@
     if (overlay) overlay.classList.add('hidden');
   }
 
-  function switchTab(name) {
-    // Update buttons
-    document.querySelectorAll('.tab-btn').forEach(b => {
-      b.classList.remove('active');
-      b.setAttribute('aria-selected', 'false');
-    });
-    const btn = document.getElementById('btn-' + name);
-    btn.classList.add('active');
-    btn.setAttribute('aria-selected', 'true');
+  function switchUnit(unit) {
+    currentUnit = unit;
 
-    // Show/hide frames
+    document.querySelectorAll('.unit-btn').forEach(b => {
+      b.classList.toggle('active', +b.dataset.unit === unit);
+    });
+
+    document.getElementById('tabs-5').style.display = unit === 5 ? '' : 'none';
+    document.getElementById('tabs-6').style.display = unit === 6 ? '' : 'none';
+
+    switchTab(activeTab[unit]);
+  }
+
+  function switchTab(name) {
+    const unit = name.endsWith('5') ? 5 : 6;
+    activeTab[unit] = name;
+
+    const group = document.getElementById('tabs-' + unit);
+    group.querySelectorAll('.tab-btn').forEach(b => {
+      const on = b.dataset.tab === name;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+
     document.querySelectorAll('.page-frame').forEach(f => f.classList.remove('active'));
     const frame = document.getElementById('frame-' + name);
     frame.classList.add('active');
 
-    // Show loading overlay if not yet loaded
     const overlay = document.getElementById('loading-' + name);
-    if (!loaded[name]) {
-      overlay.classList.remove('hidden');
-    }
+    if (overlay && !loaded[name]) overlay.classList.remove('hidden');
 
-    // Lazy-load iframe src on first visit
     if (!frame.src || frame.src === 'about:blank' || !frame.src.includes('.html')) {
       const lazySrc = frame.getAttribute('data-src');
       if (lazySrc) frame.src = lazySrc;
